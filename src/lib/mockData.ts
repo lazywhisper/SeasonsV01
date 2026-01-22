@@ -21,6 +21,7 @@ export interface PlatformStats {
   distributionCount: number;
   currentAPY: number;
   tvl: number;
+  tokenPrice: number; // $SEAS token price
 }
 
 // User node status (PRIVATE - visible when wallet connected)
@@ -45,7 +46,7 @@ export interface YieldHistoryEntry {
 export interface LiveReward {
   address: string; // Truncated wallet address
   amount: number;
-  timestamp: string; // "2 min ago"
+  timestamp: string; // "2 min ago (UTC)"
 }
 
 export interface WalletSummary {
@@ -142,6 +143,22 @@ export interface Notification {
   actionUrl?: string;
 }
 
+// Platform notifications for global/system updates (NotificationPanel)
+export interface PlatformNotification {
+  id: string;
+  type: 'asset_listing' | 'yield_distribution' | 'node_online' | 'node_offline';
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+  metadata?: {
+    assetSymbol?: string;
+    distributionAmount?: number;
+    nodeAddress?: string;
+    nodeCount?: number;
+  };
+}
+
 export interface Referral {
   address: string;
   status: 'Completed' | 'Pending' | 'Verified';
@@ -174,121 +191,61 @@ export const mockWalletSummary: WalletSummary = {
   sparklineData: [4450, 4520, 4480, 4610, 4590, 4630, 4680, 4650, 4709],
 };
 
-// Synchronized with assetsData.ts — 11 assets following 6:3:1 allocation
+// Synchronized with assetsData.ts — 5 assets following 6:3:1 allocation
 // Portfolio value: $4,709 | Target APR: ~8-10% | Weekly rewards: ~$7-9
 export const mockAssets: Asset[] = [
-  // Blue Chips (60% allocation) - 6 assets at ~10% each
-  {
-    symbol: 'BONK',
-    name: 'Bonk',
-    weightPct: 10.0,
-    change24hPct: 5.2,
-    aprRange: '8–14%',
-    rewards7dUsd: 0.82, // $471/52 weeks * 10% weight * 9% avg APR
-    logo: bonkLogo,
-    category: 'blue',
-  },
+  // Blue Chips (60% allocation) - 3 assets at 20% each
   {
     symbol: 'WIF',
     name: 'dogwifhat',
-    weightPct: 10.0,
+    weightPct: 20.0,
     change24hPct: 3.1,
     aprRange: '9–15%',
-    rewards7dUsd: 1.09, // $471/52 * 10% * 12% APR
+    rewards7dUsd: 2.18,
     logo: wifLogo,
     category: 'blue',
   },
   {
-    symbol: 'POPCAT',
-    name: 'Popcat',
-    weightPct: 10.0,
-    change24hPct: -2.3,
-    aprRange: '10–16%',
-    rewards7dUsd: 1.18, // $471/52 * 10% * 13% APR
-    logo: bomeLogo,
+    symbol: 'BONK',
+    name: 'Bonk',
+    weightPct: 20.0,
+    change24hPct: 5.2,
+    aprRange: '8–14%',
+    rewards7dUsd: 1.64,
+    logo: bonkLogo,
     category: 'blue',
   },
   {
-    symbol: 'MEW',
-    name: 'Cat in a dogs world',
-    weightPct: 10.0,
+    symbol: 'PENGU',
+    name: 'Pudgy Penguins',
+    weightPct: 20.0,
     change24hPct: 4.7,
     aprRange: '11–17%',
-    rewards7dUsd: 1.27, // $471/52 * 10% * 14% APR
+    rewards7dUsd: 2.54,
     logo: penguLogo,
     category: 'blue',
   },
-  {
-    symbol: 'MYRO',
-    name: 'Myro',
-    weightPct: 10.0,
-    change24hPct: 1.2,
-    aprRange: '12–18%',
-    rewards7dUsd: 1.36, // $471/52 * 10% * 15% APR
-    logo: pumpLogo,
-    category: 'blue',
-  },
-  {
-    symbol: 'PONKE',
-    name: 'Ponke',
-    weightPct: 10.0,
-    change24hPct: -1.5,
-    aprRange: '14–22%',
-    rewards7dUsd: 1.64, // $471/52 * 10% * 18% APR
-    logo: wojakLogo,
-    category: 'blue',
-  },
 
-  // Underdogs (30% allocation) - 3 assets at ~10% each
+  // Underdogs (30% allocation) - 1 asset at 30%
   {
-    symbol: 'SAMO',
-    name: 'Samoyedcoin',
-    weightPct: 10.0,
-    change24hPct: 6.8,
-    aprRange: '18–26%',
-    rewards7dUsd: 2.00, // $471/52 * 10% * 22% APR
-    logo: bonkLogo,
-    category: 'under',
-  },
-  {
-    symbol: 'COPE',
-    name: 'Cope',
-    weightPct: 10.0,
-    change24hPct: -3.2,
-    aprRange: '16–24%',
-    rewards7dUsd: 1.82, // $471/52 * 10% * 20% APR
-    logo: wifLogo,
-    category: 'under',
-  },
-  {
-    symbol: 'SLERF',
-    name: 'Slerf',
-    weightPct: 10.0,
-    change24hPct: 8.1,
-    aprRange: '15–21%',
-    rewards7dUsd: 1.64, // $471/52 * 10% * 18% APR
-    logo: bomeLogo,
-    category: 'under',
-  },
-
-  // Rising Stars (10% allocation) - 2 assets at ~5% each
-  {
-    symbol: 'FART',
+    symbol: 'FARTCOIN',
     name: 'Fartcoin',
-    weightPct: 5.0,
+    weightPct: 30.0,
     change24hPct: 12.5,
     aprRange: '28–38%',
-    rewards7dUsd: 1.55, // $471/52 * 5% * 34% APR
+    rewards7dUsd: 4.65,
     logo: fartcoinLogo,
-    category: 'rising',
+    category: 'under',
   },
+
+  // Rising Stars (10% allocation) - 1 asset at 10%
   {
     symbol: 'JBMB',
     name: 'Just Be More Bullish',
-    weightPct: 5.0,
+    weightPct: 10.0,
     change24hPct: 18.7,
     aprRange: '23–31%',
-    rewards7dUsd: 1.23, // $471/52 * 5% * 27% APR
+    rewards7dUsd: 2.46,
     logo: jbmbLogo,
     category: 'rising',
   },
@@ -298,13 +255,16 @@ export const mockTimeline: TimelinePoint[] = Array.from({ length: 96 }, (_, i) =
   const date = new Date('2025-10-15'); // Start from activation date
   date.setDate(date.getDate() + i); // Add days from activation
   
-  // Create realistic daily rewards around $4.08 with variance
+  // Create dramatic variance for visible "hills" on cumulative chart
   const baseReward = 4.08; // Average daily reward at 34.5% APR
-  const variance = Math.sin(i * 0.2) * 0.3; // Small cyclical variance
-  const randomNoise = (Math.random() - 0.5) * 0.4; // Random daily fluctuations ±$0.20
-  const weekendEffect = (date.getDay() === 0 || date.getDay() === 6) ? -0.15 : 0.05; // Slightly lower on weekends
+  const bigWave = Math.sin(i * 0.12) * 2.8; // Large wave for major hills
+  const mediumWave = Math.cos(i * 0.28) * 1.4; // Medium frequency variation
+  const smallWave = Math.sin(i * 0.55) * 0.7; // Small ripples
+  const randomNoise = (Math.random() - 0.5) * 1.0; // Random fluctuations
+  const weekendEffect = (date.getDay() === 0 || date.getDay() === 6) ? -0.5 : 0.2;
+  const trendBoost = i * 0.015; // Gradual upward trend
   
-  const rewardsUsd = Math.max(3.5, baseReward + variance + randomNoise + weekendEffect); // Min $3.50
+  const rewardsUsd = Math.max(1.5, baseReward + bigWave + mediumWave + smallWave + randomNoise + weekendEffect + trendBoost);
   
   return {
     tsISO: date.toISOString(),
@@ -323,84 +283,84 @@ export const mockActivity: ActivityEvent[] = [
     primary: 'Reward received — BONK • $0.92',
     amountUsd: 0.92,
     tx: '9h3...aKp',
-    ts: '2026-01-19 09:22',
+    ts: '2026-01-19 09:22 (UTC)',
   },
   {
     type: 'reward',
     primary: 'Reward received — WIF • $1.38',
     amountUsd: 1.38,
     tx: '7k2...bNm',
-    ts: '2026-01-19 06:15',
+    ts: '2026-01-19 06:15 (UTC)',
   },
   {
     type: 'reward',
-    primary: 'Reward received — PUMP • $0.54',
+    primary: 'Reward received — JBMB • $0.54',
     amountUsd: 0.54,
     tx: '3p7...dSt',
-    ts: '2026-01-18 11:30',
+    ts: '2026-01-18 11:30 (UTC)',
   },
   {
     type: 'reward',
     primary: 'Reward received — FARTCOIN • $0.71',
     amountUsd: 0.71,
     tx: '1n4...eUv',
-    ts: '2026-01-18 08:45',
+    ts: '2026-01-18 08:45 (UTC)',
   },
   {
     type: 'reward',
     primary: 'Reward received — WIF • $1.42',
     amountUsd: 1.42,
     tx: '2m5...kTu',
-    ts: '2026-01-17 14:20',
+    ts: '2026-01-17 14:20 (UTC)',
   },
   {
     type: 'reward',
     primary: 'Reward received — BONK • $0.88',
     amountUsd: 0.88,
     tx: '5t6...pZa',
-    ts: '2026-01-17 10:30',
+    ts: '2026-01-17 10:30 (UTC)',
   },
   {
     type: 'buy',
     primary: 'Purchased — SEAS • $500.00',
     amountUsd: 500.0,
     tx: '5m9...cQr',
-    ts: '2026-01-15 14:08',
+    ts: '2026-01-15 14:08 (UTC)',
   },
   {
     type: 'reward',
     primary: 'Reward received — PENGU • $0.34',
     amountUsd: 0.34,
     tx: '6p8...hRs',
-    ts: '2026-01-16 09:15',
+    ts: '2026-01-16 09:15 (UTC)',
   },
   {
     type: 'reward',
-    primary: 'Reward received — BOME • $0.43',
+    primary: 'Reward received — FARTCOIN • $0.43',
     amountUsd: 0.43,
     tx: '7r3...nXy',
-    ts: '2026-01-15 16:08',
+    ts: '2026-01-15 16:08 (UTC)',
   },
   {
     type: 'reward',
     primary: 'Reward received — WIF • $1.35',
     amountUsd: 1.35,
     tx: '9s1...oYz',
-    ts: '2026-01-14 12:42',
+    ts: '2026-01-14 12:42 (UTC)',
   },
   {
     type: 'reward',
-    primary: 'Reward received — WOJAK • $0.28',
+    primary: 'Reward received — JBMB • $0.28',
     amountUsd: 0.28,
     tx: '4q9...mVw',
-    ts: '2026-01-13 18:12',
+    ts: '2026-01-13 18:12 (UTC)',
   },
   {
     type: 'buy',
     primary: 'Purchased — SEAS • $320.00',
     amountUsd: 320.0,
     tx: '8j4...fPq',
-    ts: '2026-01-10 11:33',
+    ts: '2026-01-10 11:33 (UTC)',
   },
 ];
 
@@ -505,7 +465,7 @@ export const mockNotifications: Notification[] = [
     type: 'reward',
     title: 'Daily Rewards Distributed',
     message: 'You received $4.08 in yield rewards. Breakdown: 88.5% direct holder distribution, 10% DEX yields, 1.5% LP fee.',
-    timestamp: '2 hours ago',
+    timestamp: '2 hours ago (UTC)',
     read: false,
     actionLabel: 'View Details',
     actionUrl: '#rewards',
@@ -515,7 +475,7 @@ export const mockNotifications: Notification[] = [
     type: 'governance',
     title: 'Proposal #47 Voting Ends Soon',
     message: 'Adjust WIF target allocation to 25% — Vote closes in 18 hours. Current: 76% For, 18% Against.',
-    timestamp: '5 hours ago',
+    timestamp: '5 hours ago (UTC)',
     read: false,
     actionLabel: 'Vote Now',
     actionUrl: '#governance',
@@ -525,7 +485,7 @@ export const mockNotifications: Notification[] = [
     type: 'inclusion',
     title: 'New Asset Added to Inclusion List',
     message: 'GRASS has been added to the Underdog Rotation tier. Expected APR impact: +0.4–0.7%.',
-    timestamp: '8 hours ago',
+    timestamp: '8 hours ago (UTC)',
     read: false,
     actionLabel: 'View Inclusion',
     actionUrl: '#inclusion-list',
@@ -535,7 +495,7 @@ export const mockNotifications: Notification[] = [
     type: 'system',
     title: 'Rotation Window Approaching',
     message: 'Rising Stars category rebalancing scheduled in ~26h. Assets may be rotated based on performance metrics.',
-    timestamp: '12 hours ago',
+    timestamp: '12 hours ago (UTC)',
     read: true,
   },
   {
@@ -543,7 +503,7 @@ export const mockNotifications: Notification[] = [
     type: 'announcement',
     title: 'Platform Update: Enhanced Analytics',
     message: 'New transaction history filtering and export features now available in the Reports section.',
-    timestamp: '1 day ago',
+    timestamp: '1 day ago (UTC)',
     read: true,
     actionLabel: 'Learn More',
     actionUrl: '#announcements',
@@ -553,7 +513,7 @@ export const mockNotifications: Notification[] = [
     type: 'reward',
     title: 'Weekly Performance Summary',
     message: 'Your portfolio generated $28.56 in the past 7 days. Consistent with platform APR projections.',
-    timestamp: '1 day ago',
+    timestamp: '1 day ago (UTC)',
     read: true,
     actionLabel: 'View Report',
     actionUrl: '#reports',
@@ -563,7 +523,7 @@ export const mockNotifications: Notification[] = [
     type: 'governance',
     title: 'Proposal #46 Passed',
     message: 'Increase treasury allocation to 10% — Passed with 82% approval. Implementation begins next epoch.',
-    timestamp: '2 days ago',
+    timestamp: '2 days ago (UTC)',
     read: true,
   },
   {
@@ -571,7 +531,7 @@ export const mockNotifications: Notification[] = [
     type: 'inclusion',
     title: 'MEW Removed from Rotation',
     message: 'MEW has been removed from the Underdog tier due to declining liquidity metrics.',
-    timestamp: '3 days ago',
+    timestamp: '3 days ago (UTC)',
     read: true,
   },
 ];
@@ -589,6 +549,7 @@ export const mockPlatformStats: PlatformStats = {
   distributionCount: 13,
   currentAPY: 34.5, // Calculated from distributions
   tvl: 7000000, // Using liquidity as TVL
+  tokenPrice: 0.28, // $SEAS token price
 };
 
 // User node data (example states)
@@ -634,12 +595,97 @@ export const mockUserNodeEmpty: UserNode = {
 
 // Live rewards feed (creates FOMO effect on Overview)
 export const mockLiveRewards: LiveReward[] = [
-  { address: 'yuri...8f1G', amount: 24.32, timestamp: '2 min ago' },
-  { address: 'alex...m45b', amount: 18.91, timestamp: '5 min ago' },
-  { address: 'mari...p78c', amount: 31.17, timestamp: '8 min ago' },
-  { address: 'john...k92a', amount: 15.64, timestamp: '12 min ago' },
-  { address: 'sara...n34d', amount: 27.89, timestamp: '15 min ago' },
-  { address: 'mike...r67f', amount: 22.45, timestamp: '18 min ago' },
-  { address: 'emma...t21g', amount: 19.73, timestamp: '22 min ago' },
-  { address: 'dave...w88h', amount: 33.12, timestamp: '25 min ago' },
+  { address: 'yuri...8f1G', amount: 24.32, timestamp: '2 min ago (UTC)' },
+  { address: 'alex...m45b', amount: 18.91, timestamp: '5 min ago (UTC)' },
+  { address: 'mari...p78c', amount: 31.17, timestamp: '8 min ago (UTC)' },
+  { address: 'john...k92a', amount: 15.64, timestamp: '12 min ago (UTC)' },
+  { address: 'sara...n34d', amount: 27.89, timestamp: '15 min ago (UTC)' },
+  { address: 'mike...r67f', amount: 22.45, timestamp: '18 min ago (UTC)' },
+  { address: 'emma...t21g', amount: 19.73, timestamp: '22 min ago (UTC)' },
+  { address: 'dave...w88h', amount: 33.12, timestamp: '25 min ago (UTC)' },
+];
+
+// Platform notifications for global/system updates
+export const mockPlatformNotifications: PlatformNotification[] = [
+  {
+    id: 'platform-notif-1',
+    type: 'asset_listing',
+    title: 'New Asset Listing',
+    message: 'GRASS has been added to the Underdog Rotation tier. Expected APR impact: +0.4–0.7%.',
+    timestamp: '2 hours ago (UTC)',
+    read: false,
+    metadata: {
+      assetSymbol: 'GRASS',
+    },
+  },
+  {
+    id: 'platform-notif-2',
+    type: 'yield_distribution',
+    title: 'Yield Distribution',
+    message: 'Platform-wide distribution completed. Total distributed: $12,340.50 across 259 active nodes.',
+    timestamp: '6 hours ago (UTC)',
+    read: false,
+    metadata: {
+      distributionAmount: 12340.50,
+      nodeCount: 259,
+    },
+  },
+  {
+    id: 'platform-notif-3',
+    type: 'node_online',
+    title: 'New Node Coming Online',
+    message: 'Node with address 7xK...m3D has come online and activated with 12,500 $SEAS tokens.',
+    timestamp: '12 hours ago (UTC)',
+    read: false,
+    metadata: {
+      nodeAddress: '7xK...m3D',
+      nodeCount: 1,
+    },
+  },
+  {
+    id: 'platform-notif-4',
+    type: 'asset_listing',
+    title: 'New Asset Listing',
+    message: 'DRIFT has been added to the Blue Chip tier. Expected APR impact: +0.2–0.5%.',
+    timestamp: '1 day ago (UTC)',
+    read: true,
+    metadata: {
+      assetSymbol: 'DRIFT',
+    },
+  },
+  {
+    id: 'platform-notif-5',
+    type: 'node_offline',
+    title: 'Node Leaving',
+    message: 'Node with address 4mP...r8Q has gone offline. Total active nodes: 259.',
+    timestamp: '1 day ago (UTC)',
+    read: true,
+    metadata: {
+      nodeAddress: '4mP...r8Q',
+      nodeCount: 259,
+    },
+  },
+  {
+    id: 'platform-notif-6',
+    type: 'yield_distribution',
+    title: 'Yield Distribution',
+    message: 'Platform-wide distribution completed. Total distributed: $11,890.25 across 258 active nodes.',
+    timestamp: '2 days ago (UTC)',
+    read: true,
+    metadata: {
+      distributionAmount: 11890.25,
+      nodeCount: 258,
+    },
+  },
+  {
+    id: 'platform-notif-7',
+    type: 'node_online',
+    title: 'New Nodes Coming Online',
+    message: '3 new nodes have come online in the past hour. Total active nodes: 259.',
+    timestamp: '2 days ago (UTC)',
+    read: true,
+    metadata: {
+      nodeCount: 3,
+    },
+  },
 ];

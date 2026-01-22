@@ -160,10 +160,11 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
           {onClose && (
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg transition-all duration-200"
+              className="absolute top-3 right-3 p-2 rounded-lg cursor-pointer"
               style={{
                 background: 'var(--seasons-bg-card)',
                 border: '1px solid var(--seasons-border-hair)',
+                transition: 'all 0.3s ease',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';

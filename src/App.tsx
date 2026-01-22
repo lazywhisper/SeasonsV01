@@ -167,7 +167,7 @@ export default function App() {
         name: 'Why is the yield on Season\'s different from any other?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The differentiator is the method through yield is derived; rather than simple lending/borrowing, yield is generated from the transactional taxation; which in turn provides a radically different potential APY.',
+          text: 'The differentiator is the method through yield is derived; rather than simple lending/borrowing, yield is generated from the transactional fee mechanism; which in turn provides a radically different potential APY.',
         },
       },
       {
@@ -180,15 +180,7 @@ export default function App() {
       },
       {
         '@type': 'Question',
-        name: 'How many tokens do I need to earn yield?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Minimal threshold is 10,000 $SEAS token.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What affects the yield?',
+        name: 'How is the yield quantity calculated?',
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'Yield quantity is derived from 4 main variables: Buy Volume, Sell Volume, Number of "nodes" (active yielder\'s), and Rolling auto-yield.',
@@ -196,10 +188,10 @@ export default function App() {
       },
       {
         '@type': 'Question',
-        name: 'Why is there such a large tax on the buy/sell?',
+        name: 'Why is there such a large fee on the buy/sell?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The tax is where Market trading revenue originates from. The tax is used to incentivize holding.',
+          text: 'The fee is where Market trading revenue originates from. The fee is used to incentivize holding.',
         },
       },
       {
@@ -309,6 +301,20 @@ export default function App() {
                 >
                   Documentation
                 </a>
+                <button
+                  onClick={() => setCurrentPage('risks')}
+                  className="transition-all duration-200 hover:opacity-70"
+                  style={{
+                    color: 'var(--seasons-text-secondary)',
+                    fontSize: '13px',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: 0,
+                  }}
+                >
+                  Risk Disclosure
+                </button>
               </div>
 
               {/* Divider */}

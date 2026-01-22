@@ -18,28 +18,35 @@ export function ReferralProgram({ referrals, isConnected, hasMinimumBalance }: R
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(referralLink);
-      setCopied(true);
-      toast.success('Link copied to clipboard!');
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      const textarea = document.createElement('textarea');
-      textarea.value = referralLink;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      
-      try {
-        document.execCommand('copy');
+      // Try modern Clipboard API first
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(referralLink);
         setCopied(true);
         toast.success('Link copied to clipboard!');
         setTimeout(() => setCopied(false), 2000);
-      } catch (fallbackErr) {
-        toast.error('Unable to copy link. Please copy manually.');
-      } finally {
-        document.body.removeChild(textarea);
+      } else {
+        // Fallback for older browsers or non-secure contexts
+        const textarea = document.createElement('textarea');
+        textarea.value = referralLink;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        
+        try {
+          document.execCommand('copy');
+          setCopied(true);
+          toast.success('Link copied to clipboard!');
+          setTimeout(() => setCopied(false), 2000);
+        } catch (fallbackErr) {
+          toast.error('Unable to copy link. Please copy manually.');
+        } finally {
+          document.body.removeChild(textarea);
+        }
       }
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      toast.error('Unable to copy link. Please copy manually.');
     }
   };
 

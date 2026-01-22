@@ -79,10 +79,15 @@ export function YieldTimeline({ data, isConnected }: YieldTimelineProps) {
   const totalRewards = filteredData.reduce((sum, point) => sum + point.rewardsUsd, 0);
   const avgApr = 34.5;
 
-  const chartData = filteredData.map((point) => ({
-    date: new Date(point.tsISO).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    rewards: point.rewardsUsd,
-  }));
+  // Convert to cumulative rewards (always increasing)
+  let cumulativeSum = 0;
+  const chartData = filteredData.map((point) => {
+    cumulativeSum += point.rewardsUsd;
+    return {
+      date: new Date(point.tsISO).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      rewards: parseFloat(cumulativeSum.toFixed(2)),
+    };
+  });
 
   return (
     <div
@@ -252,7 +257,7 @@ export function YieldTimeline({ data, isConnected }: YieldTimelineProps) {
               formatter={(value: number) => [`$${value.toFixed(2)}`, 'Rewards']}
             />
             <Line
-              type="monotone"
+              type="stepAfter"
               dataKey="rewards"
               stroke="url(#lineGradient)"
               strokeWidth={2}
@@ -330,7 +335,7 @@ export function YieldTimeline({ data, isConnected }: YieldTimelineProps) {
                 letterSpacing: '0.05em',
               }}
             >
-              Average APR
+              Average APY*
             </div>
           </div>
           <div
@@ -352,6 +357,19 @@ export function YieldTimeline({ data, isConnected }: YieldTimelineProps) {
             Portfolio performance
           </div>
         </div>
+      </div>
+
+      {/* Footnote */}
+      <div
+        className="mt-4"
+        style={{
+          fontSize: '10px',
+          color: 'var(--seasons-text-tertiary)',
+          fontStyle: 'italic',
+          lineHeight: '1.4',
+        }}
+      >
+        * Calculated based on 30-day period
       </div>
     </div>
   );

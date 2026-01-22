@@ -52,23 +52,23 @@ export function PortfolioAutoBuilderMini({ assets, onNavigate }: PortfolioAutoBu
     return rewards7d * 52; // ~365 days
   }, [rewards7d]);
 
-  // Calculate weighted average APR
-  const portfolioAPR = useMemo(() => {
+  // Calculate weighted average APY
+  const portfolioAPY = useMemo(() => {
     const totalWeight = assets.reduce((sum, asset) => sum + asset.weightPct, 0);
     if (totalWeight === 0) return 0;
     
-    // Extract average APR from aprRange string (e.g., "8–12%" -> 10%)
-    const weightedAPR = assets.reduce((sum, asset) => {
+    // Extract average APY from apyRange string (e.g., "8–12%" -> 10%)
+    const weightedAPY = assets.reduce((sum, asset) => {
       const weight = asset.weightPct / totalWeight;
-      const aprMatch = asset.aprRange.match(/(\d+)–(\d+)%/);
-      if (aprMatch) {
-        const avgAPR = (parseInt(aprMatch[1]) + parseInt(aprMatch[2])) / 2;
-        return sum + (avgAPR * weight);
+      const apyMatch = asset.aprRange.match(/(\d+)–(\d+)%/);
+      if (apyMatch) {
+        const avgAPY = (parseInt(apyMatch[1]) + parseInt(apyMatch[2])) / 2;
+        return sum + (avgAPY * weight);
       }
       return sum;
     }, 0);
     
-    return weightedAPR;
+    return weightedAPY;
   }, [assets]);
 
   const compositionData = [
@@ -104,7 +104,7 @@ export function PortfolioAutoBuilderMini({ assets, onNavigate }: PortfolioAutoBu
       <div className="flex items-start justify-between mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <h2 style={{ fontSize: '16px' }}>Portfolio Allocation</h2>
+            <h2 style={{ fontSize: '16px' }}>Inclusion Allocation</h2>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -130,19 +130,6 @@ export function PortfolioAutoBuilderMini({ assets, onNavigate }: PortfolioAutoBu
           >
             {assets.length} assets • 6:3:1 strategy
           </p>
-        </div>
-
-        {/* Portfolio APR Badge */}
-        <div
-          className="px-3 py-1.5 rounded-full label-sm flex items-center gap-1.5"
-          style={{
-            background: 'rgba(96, 211, 148, 0.1)',
-            border: '1px solid rgba(96, 211, 148, 0.2)',
-            color: 'var(--seasons-success)',
-          }}
-        >
-          <TrendingUp size={12} />
-          {portfolioAPR.toFixed(1)}% APR
         </div>
       </div>
 

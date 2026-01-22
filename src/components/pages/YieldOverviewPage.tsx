@@ -1,5 +1,6 @@
 import { TrendingUp, DollarSign, Users, Clock, ArrowUpRight, ExternalLink, Info, Zap, Activity, Calendar, BarChart3 } from 'lucide-react';
 import { mockPlatformStats } from '../../lib/mockData';
+import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 interface YieldOverviewPageProps {
   isConnected: boolean;
@@ -44,8 +45,113 @@ export function YieldOverviewPage({ isConnected }: YieldOverviewPageProps) {
     { category: 'Rising Stars', percentage: 10, apy: '35-45%', examples: 'FARTCOIN, WOJAK' },
   ];
 
+  // Chart 1: APY Performance History (30 days)
+  const apyHistoryData = [
+    { date: 'Dec 22', apy: 31.2 },
+    { date: 'Dec 25', apy: 32.1 },
+    { date: 'Dec 28', apy: 33.5 },
+    { date: 'Dec 31', apy: 32.8 },
+    { date: 'Jan 3', apy: 34.2 },
+    { date: 'Jan 6', apy: 33.9 },
+    { date: 'Jan 9', apy: 35.1 },
+    { date: 'Jan 12', apy: 34.5 },
+    { date: 'Jan 15', apy: 35.8 },
+    { date: 'Jan 18', apy: 34.5 },
+  ];
+
+  // Chart 2: Yield Sources Breakdown
+  const yieldSourcesData = [
+    { name: 'Buy Fee (10%)', value: 70, color: '#E9C774', amount: 43792 },
+    { name: 'Sell Fee (10%)', value: 10, color: '#F27783', amount: 6256 },
+    { name: 'Onchain Yield', value: 20, color: '#4B80CB', amount: 12512 },
+  ];
+
+  // Chart 3: Weekly Distribution Trends (8 weeks)
+  const weeklyDistributionData = [
+    { week: 'Week 1', amount: 0 },
+    { week: 'Week 2', amount: 0 },
+    { week: 'Week 3', amount: 7247.80 },
+    { week: 'Week 4', amount: 14650.00 },
+    { week: 'Week 5', amount: 14950.00 },
+    { week: 'Week 6', amount: 14550.00 },
+    { week: 'Week 7', amount: 8706.41 },
+    { week: 'Week 8', amount: 2455.79 },
+  ];
+
+  // Custom Tooltip Components
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          className="px-3 py-2 rounded-lg"
+          style={{
+            background: 'rgba(17, 17, 19, 0.95)',
+            border: '1px solid var(--seasons-border-hair)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+          }}
+        >
+          <p style={{ fontSize: '12px', color: 'var(--seasons-text-secondary)', marginBottom: '4px' }}>
+            {label}
+          </p>
+          <p
+            style={{
+              fontSize: '16px',
+              fontWeight: 700,
+              color: 'var(--seasons-text-primary)',
+              fontFeatureSettings: "'tnum' 1",
+            }}
+          >
+            {payload[0].name === 'apy' ? `${payload[0].value}%` : `$${payload[0].value.toLocaleString()}`}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const PieTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div
+          className="px-3 py-2 rounded-lg"
+          style={{
+            background: 'rgba(17, 17, 19, 0.95)',
+            border: '1px solid var(--seasons-border-hair)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+          }}
+        >
+          <p style={{ fontSize: '12px', color: 'var(--seasons-text-secondary)', marginBottom: '4px' }}>
+            {data.name}
+          </p>
+          <p
+            style={{
+              fontSize: '16px',
+              fontWeight: 700,
+              color: 'var(--seasons-text-primary)',
+              fontFeatureSettings: "'tnum' 1",
+              marginBottom: '6px',
+            }}
+          >
+            {data.value}%
+          </p>
+          <p
+            style={{
+              fontSize: '13px',
+              color: 'var(--seasons-text-tertiary)',
+              fontFeatureSettings: "'tnum' 1",
+            }}
+          >
+            ${data.amount.toLocaleString()}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="display-md mb-2">
@@ -266,7 +372,7 @@ export function YieldOverviewPage({ isConnected }: YieldOverviewPageProps) {
                 color: 'var(--seasons-text-primary)',
               }}
             >
-              {avgAPY}%
+              {avgAPY}%<sup style={{ fontSize: '0.5em', marginLeft: '2px' }}>*</sup>
             </div>
             <div
               style={{
@@ -274,7 +380,7 @@ export function YieldOverviewPage({ isConnected }: YieldOverviewPageProps) {
                 fontSize: '11px',
               }}
             >
-              Expected annual yield
+              * Calculated based on 30-day period
             </div>
           </div>
 
@@ -327,6 +433,226 @@ export function YieldOverviewPage({ isConnected }: YieldOverviewPageProps) {
               Latest yield snapshot
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* CHARTS SECTION - NEW! */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Chart 1: APY Performance History */}
+        <div
+          className="p-6 rounded-xl"
+          style={{
+            background: 'var(--seasons-bg-elev)',
+            border: '1px solid var(--seasons-border-hair)',
+          }}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp size={18} style={{ color: 'var(--seasons-brand-grad-start)' }} />
+            <h3
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: 'var(--seasons-text-primary)',
+              }}
+            >
+              APY Performance (30d)
+            </h3>
+          </div>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={apyHistoryData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="apyGradient" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#E9C774" />
+                    <stop offset="33%" stopColor="#F27783" />
+                    <stop offset="66%" stopColor="#B44BCB" />
+                    <stop offset="100%" stopColor="#4B80CB" />
+                  </linearGradient>
+                  <linearGradient id="apyGradientFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#E9C774" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#4B80CB" stopOpacity={0.05} />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <XAxis
+                  dataKey="date"
+                  stroke="var(--seasons-text-tertiary)"
+                  style={{ fontSize: '11px', fontFeatureSettings: "'tnum' 1" }}
+                />
+                <YAxis
+                  stroke="var(--seasons-text-tertiary)"
+                  style={{ fontSize: '11px', fontFeatureSettings: "'tnum' 1" }}
+                  domain={[30, 37]}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Area
+                  type="monotone"
+                  dataKey="apy"
+                  stroke="url(#apyGradient)"
+                  strokeWidth={3}
+                  fill="url(#apyGradientFill)"
+                  filter="url(#glow)"
+                  animationDuration={1500}
+                  animationEasing="ease-out"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Chart 2: Yield Sources Breakdown */}
+        <div
+          className="p-6 rounded-xl"
+          style={{
+            background: 'var(--seasons-bg-elev)',
+            border: '1px solid var(--seasons-border-hair)',
+          }}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Activity size={18} style={{ color: 'var(--seasons-brand-grad-mid1)' }} />
+            <h3
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: 'var(--seasons-text-primary)',
+              }}
+            >
+              Yield Sources
+            </h3>
+          </div>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <defs>
+                  {/* Mesh градиент для Buy Tax */}
+                  <radialGradient id="buyTaxMesh" cx="50%" cy="50%">
+                    <stop offset="0%" stopColor="#F5D98B" />
+                    <stop offset="50%" stopColor="#E9C774" />
+                    <stop offset="100%" stopColor="#D4A959" />
+                  </radialGradient>
+                  {/* Mesh градиент для Sell Tax */}
+                  <radialGradient id="sellTaxMesh" cx="50%" cy="50%">
+                    <stop offset="0%" stopColor="#FF8A9A" />
+                    <stop offset="50%" stopColor="#F27783" />
+                    <stop offset="100%" stopColor="#E05567" />
+                  </radialGradient>
+                  {/* Mesh градиент для Rolling Yield */}
+                  <radialGradient id="rollingYieldMesh" cx="50%" cy="50%">
+                    <stop offset="0%" stopColor="#6B9FE0" />
+                    <stop offset="50%" stopColor="#4B80CB" />
+                    <stop offset="100%" stopColor="#3A66A8" />
+                  </radialGradient>
+                  <filter id="pieGlow">
+                    <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                <Pie
+                  data={yieldSourcesData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={3}
+                  dataKey="value"
+                  filter="url(#pieGlow)"
+                  animationBegin={0}
+                  animationDuration={1200}
+                  animationEasing="ease-out"
+                  stroke="none"
+                >
+                  <Cell fill="url(#buyTaxMesh)" />
+                  <Cell fill="url(#sellTaxMesh)" />
+                  <Cell fill="url(#rollingYieldMesh)" />
+                </Pie>
+                <Tooltip content={<PieTooltip />} cursor={{ fill: 'transparent' }} />
+                <Legend
+                  verticalAlign="bottom"
+                  height={36}
+                  iconType="circle"
+                  wrapperStyle={{
+                    fontSize: '12px',
+                    color: 'var(--seasons-text-secondary)',
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      {/* Chart 3: Weekly Distribution Trends - Full Width */}
+      <div
+        className="p-6 rounded-xl"
+        style={{
+          background: 'var(--seasons-bg-elev)',
+          border: '1px solid var(--seasons-border-hair)',
+        }}
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Calendar size={18} style={{ color: 'var(--seasons-brand-grad-mid2)' }} />
+          <h3
+            style={{
+              fontSize: '16px',
+              fontWeight: 600,
+              color: 'var(--seasons-text-primary)',
+            }}
+          >
+            Weekly Distribution Trends
+          </h3>
+        </div>
+        <div className="h-72">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={weeklyDistributionData} margin={{ top: 10, right: 30, left: -10, bottom: 0 }}>
+              <defs>
+                <linearGradient id="barGradient" x1="0%" y1="0%" x2="76.6%" y2="64.3%" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#F5D98B" />
+                  <stop offset="20%" stopColor="#E9C774" />
+                  <stop offset="40%" stopColor="#FF8A9A" />
+                  <stop offset="60%" stopColor="#B44BCB" />
+                  <stop offset="80%" stopColor="#6B9FE0" />
+                  <stop offset="100%" stopColor="#4B80CB" />
+                </linearGradient>
+                <filter id="barGlow">
+                  <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis
+                dataKey="week"
+                stroke="var(--seasons-text-tertiary)"
+                style={{ fontSize: '12px', fontFeatureSettings: "'tnum' 1" }}
+              />
+              <YAxis
+                stroke="var(--seasons-text-tertiary)"
+                style={{ fontSize: '11px', fontFeatureSettings: "'tnum' 1" }}
+                tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+              <Bar
+                dataKey="amount"
+                fill="url(#barGradient)"
+                radius={[8, 8, 0, 0]}
+                filter="url(#barGlow)"
+                animationDuration={1200}
+                animationEasing="ease-out"
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

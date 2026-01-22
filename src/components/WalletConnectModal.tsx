@@ -103,8 +103,8 @@ export function WalletConnectModal({ open, onOpenChange, onConnect }: WalletConn
       setTimeout(() => {
         onConnect(wallet.id);
         handleClose();
-      }, 1500);
-    }, 2000);
+      }, 750);
+    }, 1000);
   };
 
   const handleClose = () => {

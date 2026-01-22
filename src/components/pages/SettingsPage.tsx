@@ -198,7 +198,7 @@ export function SettingsPage({
 
   if (!isConnected) {
     return (
-      <div className="max-w-6xl mx-auto">
+      <div className="space-y-6">
         <div
           className="rounded-xl p-8 text-center"
           style={{
@@ -240,7 +240,7 @@ export function SettingsPage({
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="space-y-6">
       {/* Header */}
       <div className="mb-6">
         <h1 className="display-md mb-2">

@@ -1,4 +1,4 @@
-import { MoreVertical, Info, TrendingUp, TrendingDown, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { MoreVertical, Info, TrendingUp, TrendingDown, ArrowUpDown, ArrowUp, ArrowDown, PieChart as PieChartIcon, BarChart3 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,35 +23,15 @@ import fartcoinLogo from 'figma:asset/501ffda46bf5d1c0917ca63d14c5b266867ac2e7.p
 import wojakLogo from 'figma:asset/4473a63568169da525a90ec8727cf26b6ee11add.png';
 import jbmbLogo from 'figma:asset/5f7d06d332fd284477eac1ceb01e315d9b508091.png';
 import solanaLogo from 'figma:asset/5633c08b2dd5db21c15725009af45cc34535287a.png';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts';
 
-// Asset yield data with realistic APR ranges, 7-day accruals, and USD values
-const assetYieldData: Record<string, { aprRange: string; accrued7d: number; valueUsd7d: number }> = {
-  'JUP': { aprRange: '12–18%', accrued7d: 8.42, valueUsd7d: 124.50 },
-  'RAY': { aprRange: '14–22%', accrued7d: 12.15, valueUsd7d: 186.30 },
-  'ORCA': { aprRange: '10–16%', accrued7d: 6.78, valueUsd7d: 98.20 },
-  'MNGO': { aprRange: '18–26%', accrued7d: 5.32, valueUsd7d: 72.40 },
-  'BONK': { aprRange: '8–14%', accrued7d: 11.89, valueUsd7d: 245.80 },
-  'WIF': { aprRange: '9–15%', accrued7d: 10.45, valueUsd7d: 198.60 },
-  'BOME': { aprRange: '11–17%', accrued7d: 7.23, valueUsd7d: 112.70 },
-  'PENGU': { aprRange: '10–16%', accrued7d: 8.91, valueUsd7d: 134.20 },
-  'POPCAT': { aprRange: '13–19%', accrued7d: 9.67, valueUsd7d: 167.50 },
-  'FARTCOIN': { aprRange: '15–23%', accrued7d: 6.54, valueUsd7d: 89.30 },
-  'FART': { aprRange: '15–23%', accrued7d: 6.54, valueUsd7d: 42.80 },
-  'JBMB': { aprRange: '28–38%', accrued7d: 22.15, valueUsd7d: 68.90 },
-  'MEW': { aprRange: '12–18%', accrued7d: 7.88, valueUsd7d: 145.30 },
-  'MYRO': { aprRange: '11–17%', accrued7d: 6.34, valueUsd7d: 52.60 },
-  'PONKE': { aprRange: '13–19%', accrued7d: 8.12, valueUsd7d: 78.40 },
-  'SAMO': { aprRange: '14–20%', accrued7d: 9.45, valueUsd7d: 65.70 },
-  'COPE': { aprRange: '16–24%', accrued7d: 11.20, valueUsd7d: 48.90 },
-  'SLERF': { aprRange: '15–21%', accrued7d: 10.15, valueUsd7d: 58.30 },
-  'PUMP': { aprRange: '20–28%', accrued7d: 14.32, valueUsd7d: 156.40 },
-  'GOAT': { aprRange: '22–30%', accrued7d: 16.78, valueUsd7d: 178.20 },
-  'FWOG': { aprRange: '18–25%', accrued7d: 12.45, valueUsd7d: 132.50 },
-  'MOODENG': { aprRange: '25–35%', accrued7d: 18.90, valueUsd7d: 195.60 },
-  'CHILLGUY': { aprRange: '21–29%', accrued7d: 15.23, valueUsd7d: 164.80 },
-  'PNUT': { aprRange: '24–32%', accrued7d: 17.56, valueUsd7d: 182.30 },
-  'ACT': { aprRange: '26–34%', accrued7d: 19.12, valueUsd7d: 201.70 },
-  'WOJAK': { aprRange: '23–31%', accrued7d: 16.34, valueUsd7d: 171.50 },
+// Asset yield data with realistic APY ranges, 7-day accruals, and USD values
+const assetYieldData: Record<string, { apyRange: string; accrued7d: number; valueUsd7d: number }> = {
+  'WIF': { apyRange: '9–15%', accrued7d: 10.45, valueUsd7d: 198.60 },
+  'BONK': { apyRange: '8–14%', accrued7d: 11.89, valueUsd7d: 245.80 },
+  'PENGU': { apyRange: '11–17%', accrued7d: 8.91, valueUsd7d: 134.20 },
+  'FARTCOIN': { apyRange: '28–38%', accrued7d: 15.54, valueUsd7d: 189.30 },
+  'JBMB': { apyRange: '23–31%', accrued7d: 22.15, valueUsd7d: 68.90 },
 };
 
 type SortField = 'symbol' | 'allocation' | 'change24h' | 'marketCap';
@@ -66,16 +46,10 @@ const categoryMap = {
 
 // Map asset symbols to their logos
 const logoMap: Record<string, string> = {
-  'BONK': bonkLogo,
   'WIF': wifLogo,
-  'POPCAT': bomeLogo,
-  'MEW': penguLogo,
-  'MYRO': pumpLogo,
-  'PONKE': wojakLogo,
-  'SAMO': bonkLogo,
-  'COPE': wifLogo,
-  'SLERF': bomeLogo,
-  'FART': fartcoinLogo,
+  'BONK': bonkLogo,
+  'PENGU': penguLogo,
+  'FARTCOIN': fartcoinLogo,
   'JBMB': jbmbLogo,
 };
 
@@ -806,10 +780,10 @@ export function PortfolioBuilder() {
               </div>
               <div className="text-right flex-shrink-0">
                 <div className="text-xs mb-1" style={{ color: 'var(--seasons-text-tertiary)' }}>
-                  APR
+                  APY
                 </div>
                 <div className="text-sm" style={{ color: 'var(--seasons-text-secondary)' }}>
-                  {assetYieldData[asset.symbol]?.aprRange || 'N/A'}
+                  {assetYieldData[asset.symbol]?.apyRange || 'N/A'}
                 </div>
               </div>
             </div>

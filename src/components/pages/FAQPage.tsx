@@ -51,24 +51,24 @@ export function FAQPage() {
     {
       category: 'general',
       icon: Wallet,
-      question: 'Will I be taxed for transferred token between wallet?',
+      question: 'Will there be a fee for transferred tokens between wallets?',
       answer:
-        'No. The taxation module is activated whenever DEX related activities are triggered via the call functions.',
+        'No. The fee module is activated whenever DEX related activities are triggered via the call functions.',
     },
     {
       category: 'general',
       icon: BarChart3,
       popular: true,
-      question: 'What affects the yield?',
+      question: 'How is the yield quantity calculated?',
       answer:
         "Yield quantity is derived from 4 main variables: Buy Volume, Sell Volume, Number of \"nodes\" (active yielder's), and Rolling auto-yield.",
     },
     {
       category: 'general',
       icon: Coins,
-      question: 'What is the Transactional Tax?',
+      question: 'What is the Transactional Fee?',
       answer:
-        "The transactional Tax is a fee attached to every open on-chain market operations that involves the $SEAS token. The fee is captured and redirected throughout the Season's nodes.",
+        "The transactional fee is attached to every open on-chain market operations that involves the $SEAS token. The fee is captured and redirected throughout the Season's nodes.",
     },
     {
       category: 'general',
@@ -154,9 +154,9 @@ export function FAQPage() {
       category: 'token',
       icon: BarChart3,
       popular: true,
-      question: 'Why is there such a large tax on the buy/sell?',
+      question: 'Why is there such a large fee on the buy/sell?',
       answer:
-        'The tax is where Market trading revenue originates from. The tax is used to incentivize holding.',
+        'The fee is where Market trading revenue originates from. The fee is used to incentivize holding.',
     },
     {
       category: 'token',
@@ -276,14 +276,32 @@ export function FAQPage() {
     };
   }, [faqs]);
 
-  const copyLinkToFAQ = (index: number) => {
+  const copyLinkToFAQ = async (index: number) => {
     const url = `${window.location.origin}${window.location.pathname}#faq-${index}`;
-    navigator.clipboard.writeText(url);
-    // You could add a toast notification here
+    
+    try {
+      // Try modern Clipboard API first
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        // Fallback method
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      // Silent fail - user can still manually copy the URL
+    }
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="space-y-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="display-md mb-2">

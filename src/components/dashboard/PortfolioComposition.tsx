@@ -15,6 +15,11 @@ import {
 import { useState, useMemo, useEffect } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import solanaLogo from 'figma:asset/5633c08b2dd5db21c15725009af45cc34535287a.png';
+import wifLogo from 'figma:asset/695464c4e114211df8930e790b5f1354e020512b.png';
+import bonkLogo from 'figma:asset/cabe639e074a7696ad20c8b76102cc7130648803.png';
+import penguLogo from 'figma:asset/11dd47e096a75ab72a7e500bcdba8d0d4772e45b.png';
+import fartcoinLogo from 'figma:asset/501ffda46bf5d1c0917ca63d14c5b266867ac2e7.png';
+import jbmbLogo from 'figma:asset/5f7d06d332fd284477eac1ceb01e315d9b508091.png';
 
 interface PortfolioCompositionProps {
   assets: Asset[];
@@ -169,6 +174,49 @@ export function PortfolioComposition({ assets, isConnected, isRebalancing = fals
   }, [assets, activeFilter, sortField, sortDirection]);
 
   if (!isConnected) {
+    const yieldAssets = [
+      { 
+        symbol: '$WIF', 
+        name: 'Dogwifhat', 
+        category: 'BLUE CHIPS', 
+        categoryColor: '#E9C774',
+        allocation: 20,
+        logo: wifLogo 
+      },
+      { 
+        symbol: '$BONK', 
+        name: 'Bonk', 
+        category: 'BLUE CHIPS', 
+        categoryColor: '#E9C774',
+        allocation: 20,
+        logo: bonkLogo 
+      },
+      { 
+        symbol: '$PENGU', 
+        name: 'Pudgy Penguins', 
+        category: 'BLUE CHIPS', 
+        categoryColor: '#E9C774',
+        allocation: 20,
+        logo: penguLogo 
+      },
+      { 
+        symbol: '$FARTCOIN', 
+        name: 'Fartcoin', 
+        category: 'UNDERDOGS', 
+        categoryColor: '#B44BCB',
+        allocation: 30,
+        logo: fartcoinLogo 
+      },
+      { 
+        symbol: '$JBMB', 
+        name: 'Just Be More Bullish', 
+        category: 'RISING STARS', 
+        categoryColor: '#4B80CB',
+        allocation: 10,
+        logo: jbmbLogo 
+      },
+    ];
+
     return (
       <div
         className="p-4 md:p-6 rounded-xl"
@@ -179,22 +227,99 @@ export function PortfolioComposition({ assets, isConnected, isRebalancing = fals
         }}
       >
         <h2
-          className="mb-4 text-base md:text-lg"
+          className="mb-6 text-base md:text-lg"
           style={{
             color: 'var(--seasons-text-primary)',
             fontWeight: 600,
             lineHeight: '1.3',
           }}
         >
-          Portfolio Composition
+          Seasons Composition
         </h2>
-        <div className="text-center py-8 md:py-12">
-          <p className="text-sm" style={{ color: 'var(--seasons-text-secondary)' }}>
-            No assets yet.
-          </p>
-          <p className="text-xs mt-1" style={{ color: 'var(--seasons-text-tertiary)' }}>
-            Rewards start once your access is unlocked.
-          </p>
+        
+        {/* Yield Assets Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
+          {yieldAssets.map((asset, idx) => (
+            <div
+              key={idx}
+              className="flex flex-col items-center p-3 md:p-4 rounded-lg transition-all duration-200 hover:bg-white/[0.02]"
+              style={{
+                background: 'var(--seasons-bg-card)',
+                border: '1px solid var(--seasons-border-hair)',
+              }}
+            >
+              {/* Logo with Solana Badge */}
+              <div className="relative w-12 h-12 md:w-14 md:h-14 mb-3 flex-shrink-0">
+                <img
+                  src={asset.logo}
+                  alt={asset.symbol}
+                  className="w-full h-full rounded-full object-cover"
+                />
+                <img
+                  src={solanaLogo}
+                  alt="Solana"
+                  className="absolute bottom-0 right-0 w-4 h-4 rounded-full border-2"
+                  style={{ 
+                    transform: 'translate(20%, 20%)',
+                    borderColor: 'var(--seasons-bg-card)',
+                  }}
+                />
+              </div>
+              
+              {/* Symbol */}
+              <div
+                className="mb-1 text-center"
+                style={{
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  color: 'var(--seasons-text-primary)',
+                }}
+              >
+                {asset.symbol}
+              </div>
+
+              {/* Name (if exists) */}
+              {asset.name && (
+                <div
+                  className="mb-2 text-center"
+                  style={{
+                    fontSize: '10px',
+                    color: 'var(--seasons-text-tertiary)',
+                    fontWeight: 400,
+                    lineHeight: '1.3',
+                  }}
+                >
+                  {asset.name}
+                </div>
+              )}
+
+              {/* Category */}
+              <div
+                className="mb-3"
+                style={{
+                  fontSize: '9px',
+                  color: asset.categoryColor,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  fontWeight: 600,
+                }}
+              >
+                {asset.category}
+              </div>
+
+              {/* Allocation */}
+              <div
+                style={{
+                  fontSize: '18px',
+                  fontWeight: 700,
+                  color: 'var(--seasons-success)',
+                  fontFeatureSettings: "'tnum' 1",
+                }}
+              >
+                {asset.allocation}%
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -210,136 +335,48 @@ export function PortfolioComposition({ assets, isConnected, isRebalancing = fals
       }}
     >
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 md:gap-4 mb-4">
-        <div>
-          <h2
-            className="text-base md:text-lg"
-            style={{
-              color: 'var(--seasons-text-primary)',
-              fontWeight: 600,
-              lineHeight: '1.3',
-            }}
-          >
-            Portfolio Auto Builder
-          </h2>
-        </div>
-
-        {isRebalancing && (
-          <div className="flex items-center gap-2">
-            <Loader2 
-              size={16} 
-              className="animate-spin" 
-              style={{ color: 'var(--seasons-brand-grad-mid1)' }}
-            />
-            <span 
-              className="text-sm"
-              style={{ color: 'var(--seasons-text-secondary)' }}
-            >
-              Rebalancing...
-            </span>
-          </div>
-        )}
-
-        <div className="flex items-center gap-2 md:gap-4">
-          {/* Mobile: Select dropdown */}
-          <div className="md:hidden flex-1">
-            <select
-              value={activeFilter}
-              onChange={(e) => setActiveFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-md text-xs transition-colors"
-              style={{
-                background: 'var(--seasons-bg-base)',
-                color: 'var(--seasons-text-primary)',
-                border: '1px solid var(--seasons-border-hair)',
-              }}
-            >
-              <option value="all">All</option>
-              <option value="blue">Blue Chips</option>
-              <option value="under">Underdogs</option>
-              <option value="rising">Rising Stars</option>
-            </select>
-          </div>
-
-          {/* Desktop: Button group */}
-          <div className="hidden md:flex items-center gap-2 rounded-md" style={{ background: 'var(--seasons-bg-base)', padding: '4px' }}>
-            <button
-              onClick={() => setActiveFilter('all')}
-              className="px-3 py-1 rounded transition-colors"
-              style={{
-                fontSize: '11px',
-                color: activeFilter === 'all' ? 'var(--seasons-text-primary)' : 'var(--seasons-text-secondary)',
-                whiteSpace: 'nowrap',
-                background: activeFilter === 'all' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              }}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setActiveFilter('blue')}
-              className="px-3 py-1 rounded transition-colors hover:bg-white/5"
-              style={{
-                fontSize: '11px',
-                color: activeFilter === 'blue' ? 'var(--seasons-text-primary)' : 'var(--seasons-text-secondary)',
-                whiteSpace: 'nowrap',
-                background: activeFilter === 'blue' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              }}
-            >
-              Blue Chips
-            </button>
-            <button
-              onClick={() => setActiveFilter('under')}
-              className="px-3 py-1 rounded transition-colors hover:bg-white/5"
-              style={{
-                fontSize: '11px',
-                color: activeFilter === 'under' ? 'var(--seasons-text-primary)' : 'var(--seasons-text-secondary)',
-                whiteSpace: 'nowrap',
-                background: activeFilter === 'under' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              }}
-            >
-              Underdogs
-            </button>
-            <button
-              onClick={() => setActiveFilter('rising')}
-              className="px-3 py-1 rounded transition-colors hover:bg-white/5"
-              style={{
-                fontSize: '11px',
-                color: activeFilter === 'rising' ? 'var(--seasons-text-primary)' : 'var(--seasons-text-secondary)',
-                whiteSpace: 'nowrap',
-                background: activeFilter === 'rising' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              }}
-            >
-              Rising Stars
-            </button>
-          </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+      <div className="flex items-center gap-2 mb-6">
+        <h2
+          className="text-base md:text-lg"
+          style={{
+            color: 'var(--seasons-text-primary)',
+            fontWeight: 600,
+            lineHeight: '1.3',
+          }}
+        >
+          Seasons Composition
+        </h2>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
               <button
-                className="p-1 hover:bg-white/5 rounded transition-colors flex-shrink-0"
-                aria-label="More options"
+                className="flex items-center justify-center rounded-full hover:bg-white/5 transition-colors"
+                style={{ width: '18px', height: '18px' }}
               >
-                <MoreVertical size={18} style={{ color: 'var(--seasons-text-tertiary)' }} />
+                <Info size={14} style={{ color: 'var(--seasons-text-tertiary)' }} />
               </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              style={{
-                background: 'var(--seasons-bg-elev)',
-                border: '1px solid var(--seasons-border-hair)',
-              }}
+            </TooltipTrigger>
+            <TooltipContent
+              side="right"
+              style={{ maxWidth: '320px', padding: '12px' }}
             >
-              <DropdownMenuItem style={{ color: 'var(--seasons-text-secondary)' }}>
-                Download CSV
-              </DropdownMenuItem>
-              <DropdownMenuItem style={{ color: 'var(--seasons-text-secondary)' }}>
-                Copy values
-              </DropdownMenuItem>
-              <DropdownMenuItem style={{ color: 'var(--seasons-text-secondary)' }}>
-                View details
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+              <p className="text-xs mb-2" style={{ fontWeight: 600 }}>
+                Portfolio Distribution Strategy
+              </p>
+              <p className="text-xs mb-3" style={{ color: 'var(--seasons-text-secondary)', lineHeight: '1.5' }}>
+                Assets are distributed following the 6:3:1 rule:
+              </p>
+              <ul className="text-xs space-y-1.5" style={{ color: 'var(--seasons-text-secondary)', lineHeight: '1.5' }}>
+                <li><strong style={{ color: '#E9C774' }}>Blue Chips (60%)</strong> – Established memecoins with high liquidity and market cap</li>
+                <li><strong style={{ color: '#B44BCB' }}>Underdogs (30%)</strong> – Mid-tier tokens with growth potential and active communities</li>
+                <li><strong style={{ color: '#4B80CB' }}>Rising Stars (10%)</strong> – Emerging tokens with high volatility and APY potential</li>
+              </ul>
+              <p className="text-xs mt-3" style={{ color: 'var(--seasons-text-tertiary)', lineHeight: '1.5' }}>
+                This allocation balances stability with high-yield opportunities for optimal onchain returns.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {/* Allocation Cards */}
@@ -664,7 +701,7 @@ export function PortfolioComposition({ assets, isConnected, isRebalancing = fals
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <div className="inline-flex items-center gap-1.5">
-                        Est. APR
+                        Est. APY
                         <Info size={11} style={{ opacity: 0.5 }} />
                       </div>
                     </TooltipTrigger>
@@ -870,7 +907,7 @@ export function PortfolioComposition({ assets, isConnected, isRebalancing = fals
               </div>
               <div className="text-right flex-shrink-0">
                 <div className="text-xs mb-1" style={{ color: 'var(--seasons-text-tertiary)' }}>
-                  APR
+                  APY
                 </div>
                 <div className="text-sm" style={{ color: 'var(--seasons-text-secondary)' }}>
                   {asset.aprRange}

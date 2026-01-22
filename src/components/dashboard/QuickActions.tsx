@@ -97,7 +97,7 @@ export function QuickActions({ onBuySeas, onRebalance, canRebalance = true }: Qu
             </div>
           </div>
 
-          {/* Average APR */}
+          {/* Average APY */}
           <div
             className="p-4 rounded-lg"
             style={{
@@ -125,7 +125,7 @@ export function QuickActions({ onBuySeas, onRebalance, canRebalance = true }: Qu
                   letterSpacing: '0.03em',
                 }}
               >
-                Average APR
+                Average APY
               </div>
             </div>
             <div

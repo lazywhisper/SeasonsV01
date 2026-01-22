@@ -198,12 +198,12 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
                         textTransform: 'uppercase',
                       }}
                     >
-                      Total Portfolio
+                      Total Portfolio in $SEAS
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="text-xs max-w-xs">
-                      Value of your $SEAS tokens plus accumulated yield rewards (WIF, BONK, etc.).
+                      Your $SEAS token holdings
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -216,20 +216,21 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
                 color: 'var(--seasons-text-primary)',
                 lineHeight: '1.2',
                 fontWeight: 700,
-                marginBottom: '8px',
+                marginBottom: '4px',
               }}
             >
-              ${data?.portfolioUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {data?.seasBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} SEAS
             </div>
             
             <div
-              className="text-[10px] md:text-[11px]"
+              className="text-[11px] md:text-[12px]"
               style={{
                 color: 'var(--seasons-text-tertiary)',
                 marginBottom: '8px',
+                fontStyle: 'italic',
               }}
             >
-              Across SEAS & distributed assets
+              ${data?.portfolioUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD at current rate
             </div>
             
             {/* Mini Sparkline */}
@@ -255,8 +256,8 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
                   fontWeight: 500,
                 }}
               >
-                <Droplets size={9} />
-                Liquidity {data?.liquidityPct}%
+                <BarChart3 size={9} />
+                Inclusion: 60/30/10
               </div>
             </div>
           </div>
@@ -393,21 +394,19 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
                   <TooltipTrigger asChild>
                     <div className="flex items-center gap-1 cursor-help">
                       <div
-                        className="text-[10px] md:text-[11px]"
                         style={{
+                          fontSize: '10px',
                           color: 'var(--seasons-text-tertiary)',
-                          letterSpacing: '0.5px',
-                          textTransform: 'uppercase',
                         }}
                       >
-                        APR Rate
+                        APY Rate*
                       </div>
                       <Info size={10} style={{ color: 'var(--seasons-text-tertiary)', opacity: 0.5 }} />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="text-xs max-w-xs">
-                      APR is indicative; rewards stream continuously.
+                      APY is indicative; rewards stream continuously.
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -420,12 +419,12 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
                 color: 'var(--seasons-text-primary)',
                 lineHeight: '1.2',
                 fontWeight: 700,
-                marginBottom: '8px',
+                marginBottom: '4px',
               }}
             >
               {data?.aprEstimatePct}% 
               <span className="text-sm md:text-base" style={{ color: 'var(--seasons-text-tertiary)', marginLeft: '4px' }}>
-                APR
+                APY
               </span>
             </div>
             
@@ -434,9 +433,10 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
               style={{
                 color: 'var(--seasons-text-tertiary)',
                 marginBottom: '8px',
+                fontStyle: 'italic',
               }}
             >
-              Based on last 7 days
+              * Based on 30-day rolling period
             </div>
             
             <div className="space-y-1.5 md:space-y-2">
@@ -490,17 +490,28 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
           }}
         >
           <div className="flex items-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
-            <TrendingUp size={12} style={{ color: 'var(--seasons-brand-grad-mid1)' }} />
-            <span className="text-[9px] md:text-[10px]" style={{ color: 'var(--seasons-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Pool Status
-            </span>
+            <BarChart3 size={12} style={{ color: 'var(--seasons-brand-grad-mid1)' }} />
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-[9px] md:text-[10px] cursor-help" style={{ color: 'var(--seasons-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Epoch Tokens
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs max-w-xs">
+                    Total tokens allocated for current epoch period
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div className="flex items-baseline gap-1">
             <span className="text-lg md:text-xl" style={{ fontWeight: 700, color: 'var(--seasons-text-primary)' }}>
-              $45.2K
+              2.8M
             </span>
             <span className="text-[9px] md:text-[10px]" style={{ color: 'var(--seasons-text-tertiary)' }}>
-              / $50K
+              SEAS
             </span>
           </div>
         </div>
@@ -514,9 +525,20 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
         >
           <div className="flex items-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
             <Activity size={12} style={{ color: 'var(--seasons-brand-grad-end)' }} />
-            <span className="text-[9px] md:text-[10px]" style={{ color: 'var(--seasons-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Velocity
-            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-[9px] md:text-[10px] cursor-help" style={{ color: 'var(--seasons-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    Velocity
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs max-w-xs">
+                    Yield payout vs 21-day volume ratio
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div className="flex items-baseline gap-1">
             <span className="text-lg md:text-xl" style={{ fontWeight: 700, color: 'var(--seasons-text-primary)' }}>
@@ -535,11 +557,11 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
           <div className="flex items-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
             <Clock size={12} style={{ color: 'var(--seasons-brand-grad-mid2)' }} />
             <span className="text-[9px] md:text-[10px]" style={{ color: 'var(--seasons-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              Next Trigger
+              Next Distribution
             </span>
           </div>
           <div className="text-xs md:text-sm" style={{ fontWeight: 600, color: 'var(--seasons-text-secondary)' }}>
-            {data?.nextRebalance}
+            Sun, ~3pm UTC
           </div>
         </div>
       </div>

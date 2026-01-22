@@ -47,7 +47,6 @@ export function Sidebar({ currentPage, onNavigate, isAdmin = false, isCollapsed 
       title: 'Resources',
       items: [
         { label: 'FAQ', icon: <HelpCircle size={18} />, page: 'faq' },
-        { label: 'Risk Disclosure', icon: <ShieldAlert size={18} />, page: 'risks' },
       ],
     },
     {

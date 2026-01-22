@@ -26,12 +26,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { mockNotifications, type Notification } from '../lib/mockData';
+import { mockNotifications, type Notification, mockPlatformNotifications, type PlatformNotification } from '../lib/mockData';
 import logoDark from 'figma:asset/988052ec62fb0f071bcf98c26d34c830e277b2ca.png';
 import logoLight from 'figma:asset/d1a99fbd766926e0e9fcf7601d88dbd91b881f03.png';
 import type { PageType } from '../App';
 import { toast } from 'sonner@2.0.3';
 import { WalletConnectModal } from './WalletConnectModal';
+import { NotificationPanel } from './NotificationPanel';
 
 interface TopBarProps {
   isConnected: boolean;
@@ -82,7 +83,7 @@ export function TopBar({ isConnected, walletAddress, onConnectWallet, onDisconne
   };
   
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [platformNotifications, setPlatformNotifications] = useState<PlatformNotification[]>(mockPlatformNotifications);
   const [hoverConnect, setHoverConnect] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [internalWalletModalOpen, setInternalWalletModalOpen] = useState(false);
@@ -90,6 +91,21 @@ export function TopBar({ isConnected, walletAddress, onConnectWallet, onDisconne
   // Use external modal state if provided, otherwise use internal state
   const walletModalOpen = externalWalletModalOpen !== undefined ? externalWalletModalOpen : internalWalletModalOpen;
   const setWalletModalOpen = onWalletModalChange || setInternalWalletModalOpen;
+
+  // Platform notification handlers
+  const handlePlatformMarkAsRead = (id: string) => {
+    setPlatformNotifications(prev =>
+      prev.map(n => (n.id === id ? { ...n, read: true } : n))
+    );
+  };
+
+  const handlePlatformMarkAllAsRead = () => {
+    setPlatformNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const handlePlatformDeleteNotification = (id: string) => {
+    setPlatformNotifications(prev => prev.filter(n => n.id !== id));
+  };
   
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -528,7 +544,7 @@ export function TopBar({ isConnected, walletAddress, onConnectWallet, onDisconne
                       fontWeight: 600,
                     }}
                   >
-                    {isNodeActive ? 'Active' : 'Inactive'}
+                    {isNodeActive ? 'Node Active' : 'Node Inactive'}
                   </span>
                 </div>
               </TooltipTrigger>
@@ -543,202 +559,14 @@ export function TopBar({ isConnected, walletAddress, onConnectWallet, onDisconne
           </TooltipProvider>
         )}
 
-        <Popover open={notificationsOpen} onOpenChange={setNotificationsOpen}>
-          <PopoverTrigger asChild>
-            <button
-              className="relative p-2 hover:bg-white/5 rounded-lg transition-colors"
-              aria-label="Open notifications"
-            >
-              <Bell size={18} style={{ color: 'var(--seasons-text-secondary)' }} />
-              {unreadCount > 0 && (
-                <span
-                  className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
-                  style={{ background: 'var(--seasons-danger)' }}
-                />
-              )}
-            </button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            className="w-[calc(100vw-32px)] sm:w-[420px] p-0"
-            style={{
-              background: 'var(--seasons-bg-elev)',
-              border: '1px solid var(--seasons-border-hair)',
-            }}
-          >
-            {/* Header */}
-            <div
-              className="px-4 py-3 flex items-center justify-between"
-              style={{
-                borderBottom: '1px solid var(--seasons-border-hair)',
-              }}
-            >
-              <div className="flex items-center gap-2">
-                <h3
-                  style={{
-                    color: 'var(--seasons-text-primary)',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                  }}
-                >
-                  Notifications
-                </h3>
-                {unreadCount > 0 && (
-                  <span
-                    className="px-2 py-0.5 rounded-full"
-                    style={{
-                      background: 'var(--seasons-danger)',
-                      color: 'var(--seasons-text-primary)',
-                      fontSize: '11px',
-                      fontWeight: 600,
-                    }}
-                  >
-                    {unreadCount}
-                  </span>
-                )}
-              </div>
-              {unreadCount > 0 && (
-                <button
-                  onClick={markAllAsRead}
-                  className="flex items-center gap-1 px-2 py-1 rounded hover:bg-white/5 transition-colors"
-                  style={{
-                    color: 'var(--seasons-text-secondary)',
-                    fontSize: '12px',
-                  }}
-                >
-                  <CheckCheck size={14} />
-                  Mark all read
-                </button>
-              )}
-            </div>
+        <NotificationPanel
+          notifications={platformNotifications}
+          onMarkAsRead={handlePlatformMarkAsRead}
+          onMarkAllAsRead={handlePlatformMarkAllAsRead}
+          onDelete={handlePlatformDeleteNotification}
+        />
 
-            {/* Notifications List */}
-            <div
-              className="overflow-y-auto"
-              style={{
-                maxHeight: '480px',
-              }}
-            >
-              {notifications.length === 0 ? (
-                <div
-                  className="px-4 py-8 text-center"
-                  style={{
-                    color: 'var(--seasons-text-tertiary)',
-                    fontSize: '14px',
-                  }}
-                >
-                  No notifications yet
-                </div>
-              ) : (
-                notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className="group relative px-4 py-3 hover:bg-white/5 transition-colors cursor-pointer"
-                    style={{
-                      borderBottom: '1px solid var(--seasons-border-hair)',
-                      background: notification.read ? 'transparent' : 'rgba(255, 255, 255, 0.02)',
-                    }}
-                    onClick={() => handleNotificationClick(notification)}
-                  >
-                    {/* Delete button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteNotification(notification.id);
-                      }}
-                      className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-white/10 transition-all"
-                      style={{
-                        color: 'var(--seasons-text-tertiary)',
-                      }}
-                    >
-                      <X size={14} />
-                    </button>
-
-                    <div className="flex gap-3">
-                      {/* Icon */}
-                      <div className="flex-shrink-0 mt-0.5">
-                        {getNotificationIcon(notification.type)}
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0 pr-6">
-                        <div className="flex items-start justify-between gap-2 mb-1">
-                          <h4
-                            style={{
-                              color: 'var(--seasons-text-primary)',
-                              fontSize: '13px',
-                              fontWeight: 600,
-                            }}
-                          >
-                            {notification.title}
-                          </h4>
-                        </div>
-                        <p
-                          className="mb-2"
-                          style={{
-                            color: 'var(--seasons-text-secondary)',
-                            fontSize: '12px',
-                            lineHeight: '1.5',
-                          }}
-                        >
-                          {notification.message}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <span
-                            style={{
-                              color: 'var(--seasons-text-tertiary)',
-                              fontSize: '11px',
-                            }}
-                          >
-                            {notification.timestamp}
-                          </span>
-                          {notification.actionLabel && (
-                            <button
-                              className="px-2 py-1 rounded hover:bg-white/10 transition-colors"
-                              style={{
-                                color: 'var(--seasons-brand-grad-mid1)',
-                                fontSize: '11px',
-                                fontWeight: 600,
-                              }}
-                            >
-                              {notification.actionLabel}
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {/* Footer */}
-            {notifications.length > 0 && (
-              <div
-                className="px-4 py-3 text-center"
-                style={{
-                  borderTop: '1px solid var(--seasons-border-hair)',
-                }}
-              >
-                <button
-                  onClick={() => {
-                    onNavigate('settings');
-                    setNotificationsOpen(false);
-                  }}
-                  className="hover:underline transition-all"
-                  style={{
-                    color: 'var(--seasons-text-secondary)',
-                    fontSize: '12px',
-                  }}
-                >
-                  View all notifications
-                </button>
-              </div>
-            )}
-          </PopoverContent>
-        </Popover>
-
-{isConnected ? (
+        {isConnected ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -768,10 +596,27 @@ export function TopBar({ isConnected, walletAddress, onConnectWallet, onDisconne
               }}
             >
               <DropdownMenuItem
-                onClick={() => {
+                onClick={async () => {
                   if (walletAddress) {
-                    navigator.clipboard.writeText(walletAddress);
-                    toast.success('Address copied to clipboard!');
+                    try {
+                      if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(walletAddress);
+                      } else {
+                        // Fallback method
+                        const textarea = document.createElement('textarea');
+                        textarea.value = walletAddress;
+                        textarea.style.position = 'fixed';
+                        textarea.style.opacity = '0';
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                      }
+                      toast.success('Address copied to clipboard!');
+                    } catch (err) {
+                      console.error('Failed to copy:', err);
+                      toast.error('Failed to copy address');
+                    }
                   }
                 }}
                 className="cursor-pointer"
