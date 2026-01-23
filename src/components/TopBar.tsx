@@ -2,16 +2,12 @@ import { useState } from 'react';
 import { Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from './ui/sheet';
 import { WalletConnectModal } from './WalletConnectModal';
-import seasLogo from 'figma:asset/a05ba37d7326a8065a40e3c7ff0d46af03371b9e.png';
+import Frame from '../imports/Frame';
 import { TopBarProps, Season, PlatformNotification } from './topbar/types';
 import { mockPlatformNotifications } from './topbar/mockData';
 import { SearchPopover } from './topbar/SearchPopover';
 import { DesktopActions } from './topbar/DesktopActions';
 import { MobileSidebar } from './topbar/MobileSidebar';
-
-// Use same logo for both dark and light theme (we only support dark theme)
-const logoDark = seasLogo;
-const logoLight = seasLogo;
 
 export function TopBar({ 
   isConnected, 
@@ -76,16 +72,15 @@ export function TopBar({
     >
       {/* Left region */}
       <div className="flex items-center gap-4">
-        <img 
-          src={isDarkTheme ? logoDark : logoLight} 
-          alt="Seasons" 
-          className="flex-shrink-0"
+        <div 
+          className="flex items-center gap-2"
           style={{
             height: '24px',
-            width: 'auto',
-            filter: isDarkTheme ? 'brightness(1.2)' : 'none',
+            width: '129px', // Fixed width for the logo container
           }}
-        />
+        >
+          <Frame />
+        </div>
       </div>
 
       {/* Center - Search (Desktop only) */}
