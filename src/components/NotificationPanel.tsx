@@ -6,6 +6,7 @@ import {
   PopoverTrigger,
 } from './ui/popover';
 import { cardStyles } from '../styles/cardStyles';
+import { formatters } from '../utils/formatters';
 
 // Notification types specific to platform operations
 export interface PlatformNotification {
@@ -160,11 +161,12 @@ export function NotificationPanel({
             notifications.map((notification) => (
               <div
                 key={notification.id}
-                className="group relative px-4 py-3.5 transition-colors"
+                className="group relative px-4 py-3.5 transition-colors cursor-pointer hover:bg-white/5"
                 style={{
                   borderBottom: '1px solid var(--seasons-border-hair)',
                   background: notification.read ? 'transparent' : 'rgba(255, 255, 255, 0.02)',
                 }}
+                onClick={() => !notification.read && onMarkAsRead(notification.id)}
               >
                 {/* Delete button */}
                 <button
@@ -240,7 +242,7 @@ export function NotificationPanel({
                               fontFeatureSettings: '"tnum" 1',
                             }}
                           >
-                            ${notification.metadata.distributionAmount.toFixed(2)}
+                            ${formatters.currency(notification.metadata.distributionAmount)}
                           </span>
                         )}
                         {notification.metadata.nodeCount !== undefined && (
@@ -267,7 +269,7 @@ export function NotificationPanel({
                         fontSize: '11px',
                       }}
                     >
-                      {notification.timestamp}
+                      {formatters.relativeTime(new Date(notification.timestamp).getTime())}
                     </span>
                   </div>
                 </div>
