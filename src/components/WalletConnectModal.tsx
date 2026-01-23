@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { CheckCircle2, Loader2, ExternalLink, ArrowLeft, Shield, Zap } from 'lucide-react';
+import { cardStyles } from '../styles/cardStyles';
 import imgPhantom from "figma:asset/47f0574308704814d9f7ef4a604dc67336434d26.png";
 import imgSolflare from "figma:asset/9aec66ed4a1aef1ece53f9b25fbfc52a3e450ffa.png";
 import imgBackpack from "figma:asset/f259a7a098f6c648217586e4a928bade823b9395.png";
@@ -263,7 +264,7 @@ export function WalletConnectModal({ open, onOpenChange, onConnect }: WalletConn
                     onClick={() => handleWalletSelect(wallet)}
                     className="flex items-center gap-4 p-4 rounded-xl transition-all hover:scale-[1.01] active:scale-[0.99]"
                     style={{
-                      background: 'var(--seasons-bg-base)',
+                      ...cardStyles.base,
                       border: activeTab === 'cold'
                         ? '1px solid rgba(96, 211, 148, 0.15)'
                         : '1px solid var(--seasons-border-hair)',

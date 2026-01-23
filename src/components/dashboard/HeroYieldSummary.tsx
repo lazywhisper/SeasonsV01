@@ -1,17 +1,4 @@
-import { 
-  MoreVertical, 
-  Info, 
-  Wallet, 
-  TrendingUp, 
-  Gauge, 
-  Droplets, 
-  Shield, 
-  Zap,
-  BarChart3,
-  Clock,
-  Activity,
-} from 'lucide-react';
-import { Button } from '../ui/button';
+import { TrendingUp, DollarSign, Zap, Info, AlertCircle, Wallet, BarChart3, Gauge, Clock, Shield, Activity, MoreVertical } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -24,10 +11,25 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { WalletSummary } from '../../lib/mockData';
-import { Skeleton } from '../ui/skeleton';
 import { Separator } from '../ui/separator';
+import { Button } from '../ui/button';
+import { Skeleton } from '../ui/skeleton';
 import { useState } from 'react';
+import { PLATFORM } from '../../constants/platform';
+import { formatters } from '../../utils/formatters';
+import { cardStyles } from '../../styles/cardStyles';
+
+interface WalletSummary {
+  seasBalance: number;
+  portfolioUsd: number;
+  delta24hPct: number;
+  todaysYieldUsd: number;
+  totalEarnedUsd: number;
+  aprEstimatePct: number;
+  stabilityPct: number;
+  distributionUptimePct: number;
+  velocity: number;
+}
 
 interface HeroYieldSummaryProps {
   data?: WalletSummary;
@@ -211,15 +213,16 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
             </div>
             
             <div
-              className="text-2xl md:text-[36px]"
+              className="text-2xl md:text-3xl"
               style={{
                 color: 'var(--seasons-text-primary)',
-                lineHeight: '1.2',
+                fontFamily: 'Inter, sans-serif',
+                fontFeatureSettings: '"tnum" 1',
                 fontWeight: 700,
                 marginBottom: '4px',
               }}
             >
-              {data?.seasBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} SEAS
+              {formatters.tokens(data?.seasBalance || 0, 'SEAS')}
             </div>
             
             <div
@@ -230,7 +233,7 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
                 fontStyle: 'italic',
               }}
             >
-              ${data?.portfolioUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD at current rate
+              {formatters.currency(data?.portfolioUsd || 0, 2)} USD at current rate
             </div>
             
             {/* Mini Sparkline */}
@@ -307,15 +310,16 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
             </div>
             
             <div
-              className="text-2xl md:text-[36px]"
               style={{
-                color: 'var(--seasons-text-primary)',
-                lineHeight: '1.2',
+                fontSize: '36px',
                 fontWeight: 700,
-                marginBottom: '8px',
+                color: 'var(--seasons-text-primary)',
+                letterSpacing: '-0.02em',
+                fontFamily: 'Inter, sans-serif',
+                fontFeatureSettings: "'tnum' 1",
               }}
             >
-              ${data?.todaysYieldUsd.toFixed(2)}
+              ${formatters.currency(data?.todaysYieldUsd ?? 0, 2)}
             </div>
             
             <div
@@ -352,7 +356,7 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
                   fontWeight: 600,
                 }}
               >
-                ${data?.totalEarnedUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {formatters.currency(data?.totalEarnedUsd || 0, 2)}
               </div>
             </div>
             
@@ -436,7 +440,7 @@ export function HeroYieldSummary({ data, isLoading, isConnected, onBuySeas }: He
                 fontStyle: 'italic',
               }}
             >
-              * Based on 30-day rolling period
+              {PLATFORM.APY.DISCLAIMER}
             </div>
             
             <div className="space-y-1.5 md:space-y-2">

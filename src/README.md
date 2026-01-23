@@ -8,6 +8,20 @@ Seasons is a Solana-based DeFi platform offering real-time portfolio tracking, y
 
 ---
 
+## ⚡ **Recent Updates (January 2026)**
+
+**From "UX Reference" to Production-Ready!**
+
+✅ **API Infrastructure** - Full backend interface with TypeScript contracts  
+✅ **Mock/Real API Switcher** - Easy development → production transition  
+✅ **Centralized Styles** - No more ~1k lines of inline styles  
+✅ **Smart Formatters** - Consistent number/currency formatting  
+✅ **Component Architecture** - Modular, reusable, maintainable
+
+📖 **See**: [REFACTORING_SUMMARY.md](REFACTORING_SUMMARY.md) | [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)
+
+---
+
 ## 🎯 **Features**
 
 ### 📊 **Dashboard**
@@ -94,35 +108,50 @@ The app will be available at `http://localhost:5173`
 seasons-dashboard/
 ├── components/
 │   ├── pages/           # Page components
-│   │   ├── DashboardPage.tsx
-│   │   ├── YieldOverviewPage.tsx
-│   │   ├── MyNodePage.tsx
-│   │   ├── HoldingsPage.tsx
-│   │   ├── FAQPage.tsx
-│   │   ├── RisksDisclosurePage.tsx
-│   │   └── SettingsPage.tsx
 │   ├── dashboard/       # Dashboard widgets
-│   │   ├── HeroYieldSummary.tsx
-│   │   ├── PortfolioComposition.tsx
-│   │   ├── RecentActivity.tsx
-│   │   ├── QuickActions.tsx
-│   │   └── JupiterSwapWidget.tsx
-│   ├── ui/              # Reusable UI components
-│   ├── SEO.tsx          # SEO component with GA4
-│   ├── TopBar.tsx       # Navigation bar
-│   ├── Sidebar.tsx      # Sidebar navigation
-│   └── CursorGlow.tsx   # Cursor effect
+│   │   ├── node/        # Node status sub-components
+│   │   ├── PortfolioComposition/  # Portfolio sub-components
+│   │   └── ...
+│   └── ui/              # Reusable UI components
+│       ├── FilterButtonGroup.tsx
+│       ├── MetricCard.tsx
+│       └── ErrorBoundary.tsx
+├── services/            # 🆕 API layer
+│   ├── api/
+│   │   ├── types.ts     # TypeScript contracts
+│   │   └── seasonsApi.ts  # HTTP client
+│   ├── dataService.ts   # Mock/Real API switcher
+│   └── README.md        # API documentation
+├── hooks/               # 🆕 Custom React hooks
+│   ├── useDashboardData.ts  # Data fetching
+│   ├── useAnimatedValue.ts  # Animations
+│   └── usePortfolioSort.ts  # Sorting logic
+├── utils/               # 🆕 Utilities
+│   └── formatters.ts    # Number/currency formatters
+├── constants/           # 🆕 Platform constants
+│   └── platform.ts      # All magic numbers
+├── styles/              # 🆕 Centralized styles
+│   ├── cardStyles.ts    # Reusable component styles
+│   └── globals.css      # Global styles & Tailwind
 ├── lib/
-│   ├── mockData.ts      # Mock data for development
-│   └── assetsData.ts    # Asset inclusion lists
-├── styles/
-│   └── globals.css      # Global styles & Tailwind config
+│   ├── mockData.ts      # Mock data (dev only)
+│   └── assetsData.ts    # Asset lists
 ├── public/
-│   ├── sitemap.xml      # SEO sitemap
-│   ├── robots.txt       # Crawler instructions
-│   └── manifest.json    # PWA manifest
-└── App.tsx              # Main application component
+│   ├── sitemap.xml
+│   ├── robots.txt
+│   └── manifest.json
+├── .env.example         # 🆕 Environment variables template
+├── MIGRATION_GUIDE.md   # 🆕 How to migrate
+├── REFACTORING_SUMMARY.md  # 🆕 What changed
+└── App.tsx
 ```
+
+**Key Additions:**
+- 🆕 `/services/` - API infrastructure with mock/real switcher
+- 🆕 `/hooks/` - Reusable React hooks for data & UI
+- 🆕 `/utils/` - Formatters for numbers, dates, addresses
+- 🆕 `/constants/` - All platform constants in one place
+- 🆕 `/styles/cardStyles.ts` - Centralized component styles
 
 ---
 
@@ -293,9 +322,14 @@ Visual breakdown of asset allocation (60/30/10 rule).
 
 ## 📚 **Documentation**
 
-- **SEO Audit Report**: `/SEO-AUDIT-REPORT.md`
-- **Design Guidelines**: `/guidelines/Guidelines.md`
-- **Attributions**: `/Attributions.md`
+- **🎯 Refactoring Summary**: [REFACTORING_SUMMARY.md](/REFACTORING_SUMMARY.md) - Complete refactoring report
+- **📖 Migration Guide**: [MIGRATION_GUIDE.md](/MIGRATION_GUIDE.md) - Step-by-step migration instructions
+- **🚀 Next Steps**: [NEXT_STEPS.md](/NEXT_STEPS.md) - Continue refactoring (Week 1-4 plan)
+- **📊 Progress Tracker**: [REFACTORING_PROGRESS.md](/REFACTORING_PROGRESS.md) - Detailed progress
+- **🔌 API Documentation**: [/services/README.md](/services/README.md) - Data service guide
+- **🎨 Design Guidelines**: `/guidelines/Guidelines.md` - Brand & UI guidelines
+- **🔍 SEO Audit Report**: `/SEO-AUDIT-REPORT.md` - SEO analysis
+- **🙏 Attributions**: `/Attributions.md` - Third-party credits
 
 ---
 

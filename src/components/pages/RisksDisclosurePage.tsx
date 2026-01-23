@@ -1,4 +1,5 @@
 import { AlertTriangle, ShieldAlert, Info } from 'lucide-react';
+import { cardStyles } from '../../styles/cardStyles';
 
 export function RisksDisclosurePage() {
   const risks = [
@@ -112,10 +113,7 @@ export function RisksDisclosurePage() {
       {/* Risks List */}
       <div
         className="p-6 rounded-xl mb-6"
-        style={{
-          background: 'var(--seasons-bg-elev)',
-          border: '1px solid var(--seasons-border-hair)',
-        }}
+        style={cardStyles.elevated}
       >
         <h2
           className="mb-6"
@@ -177,10 +175,7 @@ export function RisksDisclosurePage() {
       {/* Additional Disclaimers */}
       <div
         className="p-6 rounded-xl"
-        style={{
-          background: 'var(--seasons-bg-elev)',
-          border: '1px solid var(--seasons-border-hair)',
-        }}
+        style={cardStyles.elevated}
       >
         <h2
           className="mb-4"

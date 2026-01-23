@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { X, ExternalLink, Zap, ChevronDown } from 'lucide-react';
 import { Button } from '../ui/button';
+import { PLATFORM } from '../../constants/platform';
+import { formatters } from '../../utils/formatters';
 
 // Token logos
 import seasLogo from 'figma:asset/a05ba37d7326a8065a40e3c7ff0d46af03371b9e.png';
@@ -11,10 +13,6 @@ import usdcLogo from 'figma:asset/024dbd2e78c43da80a61ca7d253af62add04e346.png';
 interface JupiterSwapWidgetProps {
   onClose?: () => void;
 }
-
-// $SEAS Token Configuration
-const SEAS_TOKEN_ADDRESS = '7GdpaeSzvkx1a78rRkU11KstM1x8naMmMmmpWQnQSEAS'; // Real $SEAS token mint address
-const USDC_TOKEN_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'; // USDC on Solana
 
 type PaymentToken = 'SOL' | 'USDC';
 
@@ -29,7 +27,6 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
   
   // Mock current SEAS balance (in real app, get from wallet)
   const [currentSeasBalance] = useState(8750); // Example: user has 8,750 SEAS
-  const NODE_ACTIVATION_THRESHOLD = 10000;
   
   // Real market prices (January 2026)
   const solPrice = 129; // USD per SOL
@@ -38,11 +35,8 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
   const solToSeasRate = solPrice / seasPrice; // 460.71 SEAS per SOL
   const usdcToSeasRate = usdcPrice / seasPrice; // 3.57 SEAS per USDC
 
-  // Platform fees
-  const PLATFORM_FEE_BPS = 1000; // 10% = 1000 basis points
-  const SERVICE_FEE_BPS = 150; // 1.5% = 150 basis points
-  const TOTAL_FEE_BPS = PLATFORM_FEE_BPS + SERVICE_FEE_BPS; // 11.5% total
-  
+  // Platform fees from constants
+  const TOTAL_FEE_BPS = PLATFORM.FEES.PLATFORM_BPS + PLATFORM.FEES.SERVICE_BPS; // 11.5% total
   const TOTAL_FEE_PERCENTAGE = TOTAL_FEE_BPS / 10000; // 0.115 = 11.5%
 
   const currentExchangeRate = selectedToken === 'SOL' ? solToSeasRate : usdcToSeasRate;
@@ -56,7 +50,7 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
       const beforeFee = amount * currentExchangeRate;
       const totalFeeAmount = beforeFee * TOTAL_FEE_PERCENTAGE;
       const afterFee = beforeFee - totalFeeAmount;
-      setToAmount(afterFee.toFixed(2));
+      setToAmount(afterFee.toFixed(2)); // Keep .toFixed(2) here - it's for input state, not display
       setShowDetails(true);
     } else if (!fromAmount && !toAmount) {
       setShowDetails(false);
@@ -98,10 +92,10 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
   
   // Calculate node status
   const totalAfterPurchase = currentSeasBalance + nodeAmount;
-  const isNodeAlreadyActive = currentSeasBalance >= NODE_ACTIVATION_THRESHOLD;
-  const willNodeActivate = !isNodeAlreadyActive && totalAfterPurchase >= NODE_ACTIVATION_THRESHOLD;
-  const remainingForNode = Math.max(0, NODE_ACTIVATION_THRESHOLD - totalAfterPurchase);
-  const progressToNode = Math.min(100, (totalAfterPurchase / NODE_ACTIVATION_THRESHOLD) * 100);
+  const isNodeAlreadyActive = currentSeasBalance >= PLATFORM.NODE_ACTIVATION_THRESHOLD;
+  const willNodeActivate = !isNodeAlreadyActive && totalAfterPurchase >= PLATFORM.NODE_ACTIVATION_THRESHOLD;
+  const remainingForNode = Math.max(0, PLATFORM.NODE_ACTIVATION_THRESHOLD - totalAfterPurchase);
+  const progressToNode = Math.min(100, (totalAfterPurchase / PLATFORM.NODE_ACTIVATION_THRESHOLD) * 100);
 
   return (
     <div
@@ -326,7 +320,7 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
                       fontFeatureSettings: "'tnum' 1",
                     }}
                   >
-                    ${fromAmount ? (parseFloat(fromAmount) * currentTokenPrice).toFixed(2) : '0.00'}
+                    {formatters.currency(fromAmount ? parseFloat(fromAmount) * currentTokenPrice : 0, 2)}
                   </span>
                 ) : (
                   <span style={{ fontSize: '13px', color: 'transparent' }}>-</span>
@@ -417,7 +411,7 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
                     fontFeatureSettings: "'tnum' 1",
                   }}
                 >
-                  ${toAmount ? (parseFloat(toAmount) * seasPrice).toFixed(2) : '0.00'}
+                  {formatters.currency(toAmount ? parseFloat(toAmount) * seasPrice : 0, 2)}
                 </span>
                 <span
                   style={{
@@ -453,7 +447,7 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
                       fontFeatureSettings: "'tnum' 1",
                     }}
                   >
-                    1 {selectedToken} ≈ {currentExchangeRate.toLocaleString('en-US', { maximumFractionDigits: 2 })} SEAS
+                    1 {selectedToken} ≈ {formatters.number(currentExchangeRate, 2)} SEAS
                   </span>
                 </div>
                 
@@ -494,7 +488,7 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
                         fontFeatureSettings: "'tnum' 1",
                       }}
                     >
-                      {nodeAmount.toLocaleString('en-US', { maximumFractionDigits: 2 })} SEAS
+                      {formatters.number(nodeAmount, 2)} SEAS
                     </span>
                   </div>
                   
@@ -515,17 +509,17 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
                         </span>
                       </div>
                       <span style={{ fontSize: '8px', color: 'var(--seasons-text-tertiary)' }}>
-                        Total: {totalAfterPurchase.toLocaleString('en-US', { maximumFractionDigits: 0 })} / {NODE_ACTIVATION_THRESHOLD.toLocaleString()} SEAS
+                        Total: {formatters.number(totalAfterPurchase, 0)} / {formatters.number(PLATFORM.NODE_ACTIVATION_THRESHOLD)} SEAS
                       </span>
                     </div>
                   ) : (
                     <div className="mt-1.5">
                       <div className="flex items-center justify-between mb-1">
                         <span style={{ fontSize: '8px', color: 'var(--seasons-text-tertiary)' }}>
-                          {totalAfterPurchase.toLocaleString('en-US', { maximumFractionDigits: 0 })} / {NODE_ACTIVATION_THRESHOLD.toLocaleString()} SEAS
+                          {formatters.number(totalAfterPurchase, 0)} / {formatters.number(PLATFORM.NODE_ACTIVATION_THRESHOLD)} SEAS
                         </span>
                         <span style={{ fontSize: '8px', color: 'var(--seasons-text-tertiary)', fontWeight: 600 }}>
-                          {progressToNode.toFixed(0)}%
+                          {formatters.percentage(progressToNode, 0)}
                         </span>
                       </div>
                       <div className="w-full h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.05)' }}>
@@ -538,7 +532,7 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
                         />
                       </div>
                       <span style={{ fontSize: '8px', color: 'var(--seasons-text-tertiary)', marginTop: '2px', display: 'block' }}>
-                        {remainingForNode.toLocaleString('en-US', { maximumFractionDigits: 0 })} more SEAS for Yield Node
+                        {formatters.number(remainingForNode, 0)} more SEAS for Yield Node
                       </span>
                     </div>
                   )}
@@ -581,7 +575,7 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
             onClick={(e) => {
               e.preventDefault();
               if (fromAmount && !isLoading) {
-                window.open(`https://jup.ag/swap/${selectedToken === 'SOL' ? 'SOL' : USDC_TOKEN_ADDRESS}-${SEAS_TOKEN_ADDRESS}`, '_blank');
+                window.open(`https://jup.ag/swap/${selectedToken === 'SOL' ? 'SOL' : PLATFORM.USDC_TOKEN_ADDRESS}-${PLATFORM.SEAS_TOKEN_ADDRESS}`, '_blank');
               }
             }}
             className="w-full relative overflow-hidden group transition-all duration-300 flex items-center justify-center"
@@ -648,7 +642,7 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
         }}
       >
         <a
-          href={`https://solscan.io/token/${SEAS_TOKEN_ADDRESS}`}
+          href={`https://solscan.io/token/${PLATFORM.SEAS_TOKEN_ADDRESS}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 transition-all duration-200"

@@ -14,6 +14,7 @@ import {
 } from '../ui/tooltip';
 import { useState } from 'react';
 import { DollarSign, TrendingUp } from 'lucide-react';
+import { cardStyles, textStyles, buttonStyles } from '../../styles/cardStyles';
 
 interface QuickActionsProps {
   onBuySeas: () => void;
@@ -30,37 +31,16 @@ export function QuickActions({ onBuySeas, onRebalance, canRebalance = true }: Qu
 
   return (
     <>
-      <div
-        className="p-6 rounded-xl"
-        style={{
-          background: 'var(--seasons-bg-elev)',
-          border: '1px solid var(--seasons-border-hair)',
-          boxShadow: 'var(--seasons-card-shadow)',
-        }}
-      >
+      <div className="p-6 rounded-xl" style={cardStyles.elevated}>
         {/* Header */}
-        <h2
-          className="mb-6"
-          style={{
-            color: 'var(--seasons-text-primary)',
-            fontWeight: 600,
-            fontSize: '17px',
-            lineHeight: '1.3',
-          }}
-        >
+        <h2 className="mb-6" style={textStyles.heading}>
           Quick Actions
         </h2>
 
         {/* Metrics Stack */}
         <div className="space-y-3 mb-6">
           {/* Total Rewards */}
-          <div
-            className="p-4 rounded-lg"
-            style={{
-              background: 'var(--seasons-bg-card)',
-              border: '1px solid var(--seasons-border-hair)',
-            }}
-          >
+          <div className="p-4 rounded-lg" style={cardStyles.base}>
             <div className="flex items-center gap-2 mb-2">
               <div
                 className="flex items-center justify-center rounded-md"
@@ -84,27 +64,13 @@ export function QuickActions({ onBuySeas, onRebalance, canRebalance = true }: Qu
                 Total rewards
               </div>
             </div>
-            <div
-              className="font-inter"
-              style={{
-                color: 'var(--seasons-text-primary)',
-                fontSize: '22px',
-                fontWeight: 600,
-                lineHeight: '1.2',
-              }}
-            >
+            <div className="font-inter" style={textStyles.tabular}>
               $5645.69
             </div>
           </div>
 
           {/* Average APY */}
-          <div
-            className="p-4 rounded-lg"
-            style={{
-              background: 'var(--seasons-bg-card)',
-              border: '1px solid var(--seasons-border-hair)',
-            }}
-          >
+          <div className="p-4 rounded-lg" style={cardStyles.base}>
             <div className="flex items-center gap-2 mb-2">
               <div
                 className="flex items-center justify-center rounded-md"
@@ -128,15 +94,7 @@ export function QuickActions({ onBuySeas, onRebalance, canRebalance = true }: Qu
                 Average APY
               </div>
             </div>
-            <div
-              className="font-inter"
-              style={{
-                color: 'var(--seasons-text-primary)',
-                fontSize: '22px',
-                fontWeight: 600,
-                lineHeight: '1.2',
-              }}
-            >
+            <div className="font-inter" style={textStyles.tabular}>
               11.9%
             </div>
           </div>

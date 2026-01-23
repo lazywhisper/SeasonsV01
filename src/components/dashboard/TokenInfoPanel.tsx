@@ -1,4 +1,5 @@
 import { DollarSign, Droplets, TrendingUp, BarChart3, Activity, Receipt } from 'lucide-react';
+import { formatters } from '../../utils/formatters';
 import {
   Tooltip,
   TooltipContent,
@@ -114,7 +115,7 @@ export function TokenInfoPanel({
               lineHeight: '1.2',
             }}
           >
-            ${(marketCap / 1000000).toFixed(1)}M
+            {formatters.compactCurrency(marketCap, 1)}
           </div>
 
           <div
@@ -179,7 +180,7 @@ export function TokenInfoPanel({
               lineHeight: '1.2',
             }}
           >
-            ${(liquidity / 1000000).toFixed(1)}M
+            {formatters.compactCurrency(liquidity, 1)}
           </div>
 
           <div
@@ -244,7 +245,7 @@ export function TokenInfoPanel({
               lineHeight: '1.2',
             }}
           >
-            ${price.toFixed(2)}
+            {formatters.currency(price, 2)}
           </div>
 
           <div
@@ -291,7 +292,7 @@ export function TokenInfoPanel({
               lineHeight: '1.2',
             }}
           >
-            {change24h >= 0 ? '+' : ''}{change24h.toFixed(2)}%
+            {change24h >= 0 ? '+' : ''}{formatters.number(change24h, 2)}%
           </div>
         </div>
 
@@ -326,7 +327,7 @@ export function TokenInfoPanel({
               lineHeight: '1.2',
             }}
           >
-            {txs24h.toLocaleString()}
+            {formatters.number(txs24h)}
           </div>
         </div>
 
@@ -361,7 +362,7 @@ export function TokenInfoPanel({
               lineHeight: '1.2',
             }}
           >
-            {(totalTxs / 1000).toFixed(1)}K
+            {formatters.number(totalTxs / 1000, 1)}K
           </div>
         </div>
       </div>

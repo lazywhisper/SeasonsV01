@@ -1,19 +1,38 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { TopBar } from './components/TopBar';
 import { Sidebar } from './components/Sidebar';
 import { SEO } from './components/SEO';
 import { CursorGlow } from './components/CursorGlow';
-import { DashboardPage } from './components/pages/DashboardPage';
-import { YieldOverviewPage } from './components/pages/YieldOverviewPage';
-import { MyNodePage } from './components/pages/MyNodePage';
-import { HoldingsPage } from './components/pages/HoldingsPage';
-import { FAQPage } from './components/pages/FAQPage';
-import { RisksDisclosurePage } from './components/pages/RisksDisclosurePage';
-import { SettingsPage } from './components/pages/SettingsPage';
 import { Toaster } from './components/ui/sonner';
 import { toast } from 'sonner@2.0.3';
 import { mockPlatformStats, mockLiveRewards, mockAssets, mockUserNode } from './lib/mockData';
 import './styles/globals.css';
+
+// Lazy load pages for better code splitting
+const DashboardPage = lazy(() => import('./components/pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
+const YieldOverviewPage = lazy(() => import('./components/pages/YieldOverviewPage').then(m => ({ default: m.YieldOverviewPage })));
+const MyNodePage = lazy(() => import('./components/pages/MyNodePage').then(m => ({ default: m.MyNodePage })));
+const HoldingsPage = lazy(() => import('./components/pages/HoldingsPage').then(m => ({ default: m.HoldingsPage })));
+const FAQPage = lazy(() => import('./components/pages/FAQPage').then(m => ({ default: m.FAQPage })));
+const RisksDisclosurePage = lazy(() => import('./components/pages/RisksDisclosurePage').then(m => ({ default: m.RisksDisclosurePage })));
+const SettingsPage = lazy(() => import('./components/pages/SettingsPage').then(m => ({ default: m.SettingsPage })));
+
+// Loading fallback component
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="animate-pulse space-y-4 w-full max-w-4xl px-4">
+        <div className="h-8 bg-white/5 rounded-lg w-1/3" />
+        <div className="h-4 bg-white/5 rounded-lg w-2/3" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-32 bg-white/5 rounded-xl" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export type PageType = 
   | 'dashboard'
@@ -108,48 +127,58 @@ export default function App() {
     switch (currentPage) {
       case 'dashboard':
         return (
-          <DashboardPage
-            isConnected={isConnected}
-            onConnectWallet={() => setWalletModalOpen(true)}
-            onBuySeas={handleBuySeas}
-            onNavigate={(page) => setCurrentPage(page as PageType)}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <DashboardPage
+              isConnected={isConnected}
+              onConnectWallet={() => setWalletModalOpen(true)}
+              onBuySeas={handleBuySeas}
+              onNavigate={(page) => setCurrentPage(page as PageType)}
+            />
+          </Suspense>
         );
       case 'yield-overview':
         return (
-          <YieldOverviewPage
-            isConnected={isConnected}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <YieldOverviewPage
+              isConnected={isConnected}
+            />
+          </Suspense>
         );
       case 'my-node':
         return (
-          <MyNodePage
-            nodeData={mockUserNode}
-            onBuySeas={handleBuySeas}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <MyNodePage
+              nodeData={mockUserNode}
+              onBuySeas={handleBuySeas}
+            />
+          </Suspense>
         );
       case 'holdings':
-        return <HoldingsPage />;
+        return <Suspense fallback={<PageLoader />}><HoldingsPage /></Suspense>;
       case 'faq':
-        return <FAQPage />;
+        return <Suspense fallback={<PageLoader />}><FAQPage /></Suspense>;
       case 'risks':
-        return <RisksDisclosurePage />;
+        return <Suspense fallback={<PageLoader />}><RisksDisclosurePage /></Suspense>;
       case 'settings':
         return (
-          <SettingsPage
-            isConnected={isConnected}
-            walletAddress={walletAddress}
-            onDisconnect={handleDisconnectWallet}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <SettingsPage
+              isConnected={isConnected}
+              walletAddress={walletAddress}
+              onDisconnect={handleDisconnectWallet}
+            />
+          </Suspense>
         );
       default:
         return (
-          <DashboardPage
-            isConnected={isConnected}
-            onConnectWallet={handleConnectWallet}
-            onBuySeas={handleBuySeas}
-            onNavigate={(page) => setCurrentPage(page as PageType)}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <DashboardPage
+              isConnected={isConnected}
+              onConnectWallet={handleConnectWallet}
+              onBuySeas={handleBuySeas}
+              onNavigate={(page) => setCurrentPage(page as PageType)}
+            />
+          </Suspense>
         );
     }
   };

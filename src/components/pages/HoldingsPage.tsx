@@ -1,6 +1,7 @@
 import { PortfolioBuilder } from './PortfolioBuilder';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { PieChart as PieChartIcon, TrendingUp } from 'lucide-react';
+import { cardStyles } from '../../styles/cardStyles';
 
 export function HoldingsPage() {
   // Portfolio Distribution Data - Actual Allocation with token examples from Portfolio Auto Builder
@@ -131,10 +132,7 @@ export function HoldingsPage() {
         {/* Chart 1: Portfolio Distribution Donut */}
         <div
           className="p-6 rounded-xl"
-          style={{
-            background: 'var(--seasons-bg-elev)',
-            border: '1px solid var(--seasons-border-hair)',
-          }}
+          style={cardStyles.elevated}
         >
           <div className="flex items-center gap-2 mb-4">
             <PieChartIcon size={18} style={{ color: 'var(--seasons-brand-grad-start)' }} />
@@ -214,10 +212,7 @@ export function HoldingsPage() {
         {/* Chart 2: Top 5 Assets by APY */}
         <div
           className="p-6 rounded-xl"
-          style={{
-            background: 'var(--seasons-bg-elev)',
-            border: '1px solid var(--seasons-border-hair)',
-          }}
+          style={cardStyles.elevated}
         >
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp size={18} style={{ color: 'var(--seasons-success)' }} />

@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Zap, CheckCircle, TrendingUp, AlertCircle } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Progress } from '../ui/progress';
+import { PLATFORM } from '../../constants/platform';
+import { formatters } from '../../utils/formatters';
+import { cardStyles, textStyles, badgeStyles } from '../../styles/cardStyles';
 
 interface NodeStatusCardProps {
   isConnected: boolean;
@@ -16,28 +19,21 @@ export function NodeStatusCard({
   onConnectWallet, 
   onBuySeas 
 }: NodeStatusCardProps) {
-  const ACTIVATION_THRESHOLD = 10000;
-  const progressPercent = Math.min((seasBalance / ACTIVATION_THRESHOLD) * 100, 100);
-  const remainingTokens = Math.max(ACTIVATION_THRESHOLD - seasBalance, 0);
+  const progressPercent = Math.min((seasBalance / PLATFORM.NODE.ACTIVATION_THRESHOLD) * 100, 100);
+  const remainingTokens = Math.max(PLATFORM.NODE.ACTIVATION_THRESHOLD - seasBalance, 0);
 
   // STATE 1: Wallet Not Connected
   if (!isConnected) {
     return (
       <div
         className="rounded-2xl p-8 md:p-10"
-        style={{
-          background: 'var(--seasons-bg-elev)',
-          border: '1px solid var(--seasons-border-hair)',
-        }}
+        style={cardStyles.elevated}
       >
         <div className="text-center max-w-2xl mx-auto">
           {/* Badge */}
           <div
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-3"
-            style={{
-              background: 'rgba(172, 169, 169, 0.08)',
-              border: '1px solid rgba(172, 169, 169, 0.15)',
-            }}
+            style={badgeStyles.inactive}
           >
             <div
               className="w-1.5 h-1.5 rounded-full"
@@ -106,7 +102,7 @@ export function NodeStatusCard({
   }
 
   // STATE 2: Connected but < 10,000 tokens
-  if (seasBalance < ACTIVATION_THRESHOLD) {
+  if (seasBalance < PLATFORM.NODE.ACTIVATION_THRESHOLD) {
     return (
       <div
         className="rounded-2xl overflow-hidden"
@@ -308,14 +304,16 @@ export function NodeStatusCard({
                   <div className="flex items-baseline gap-1.5">
                     <span
                       style={{
-                        fontSize: '20px',
+                        fontSize: '14px',
                         fontWeight: 700,
                         color: 'var(--seasons-text-primary)',
+                        fontFamily: 'Inter, sans-serif',
+                        fontFeatureSettings: "'tnum' 1",
                         letterSpacing: '-0.01em',
                         lineHeight: '1',
                       }}
                     >
-                      {seasBalance.toLocaleString()} $SEAS
+                      {formatters.number(seasBalance)} $SEAS
                     </span>
                   </div>
                 </div>
@@ -356,7 +354,7 @@ export function NodeStatusCard({
                         color: seasBalance === 0 ? 'var(--seasons-text-tertiary)' : 'unset',
                       }}
                     >
-                      {progressPercent.toFixed(1)}%
+                      {formatters.percentage(progressPercent, 1)}
                     </span>
                   </div>
                 </div>
@@ -402,7 +400,7 @@ export function NodeStatusCard({
                     maxWidth: '400px',
                   }}
                 >
-                  Need <span style={{ fontWeight: 700, fontFeatureSettings: "'tnum' 1", color: 'var(--seasons-text-primary)' }}>{remainingTokens.toLocaleString()} $SEAS</span> to activate
+                  Need <span style={{ fontWeight: 700, fontFeatureSettings: "'tnum' 1", color: 'var(--seasons-text-primary)' }}>{formatters.number(remainingTokens)} $SEAS</span> to activate
                 </p>
 
                 <Button
@@ -568,7 +566,7 @@ export function NodeStatusCard({
                   lineHeight: '1.1',
                 }}
               >
-                {seasBalance.toLocaleString()}
+                {formatters.number(seasBalance)}
               </div>
             </div>
           </div>

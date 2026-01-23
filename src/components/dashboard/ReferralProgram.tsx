@@ -1,5 +1,6 @@
 import { Copy, Share2, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { Referral } from '../../lib/mockData';
+import { formatters } from '../../utils/formatters';
 import { useState } from 'react';
 import { toast } from 'sonner@2.0.3';
 
@@ -357,7 +358,7 @@ export function ReferralProgram({ referrals, isConnected, hasMinimumBalance }: R
                             color: 'var(--seasons-text-primary)',
                           }}
                         >
-                          {ref.purchased.toLocaleString()} $SEAS
+                          {formatters.number(ref.purchased)} $SEAS
                         </td>
                         <td
                           className="py-3 px-4 text-right text-xs"
@@ -365,7 +366,7 @@ export function ReferralProgram({ referrals, isConnected, hasMinimumBalance }: R
                             color: ref.rewarded > 0 ? 'var(--seasons-success)' : 'var(--seasons-text-tertiary)',
                           }}
                         >
-                          {ref.rewarded > 0 ? `+${ref.rewarded} $SEAS` : '—'}
+                          {ref.rewarded > 0 ? `+${formatters.number(ref.rewarded)} $SEAS` : '—'}
                         </td>
                       </tr>
                     ))}
@@ -419,12 +420,12 @@ export function ReferralProgram({ referrals, isConnected, hasMinimumBalance }: R
                     <div className="flex items-center justify-between text-[10px]">
                       <div>
                         <span style={{ color: 'var(--seasons-text-tertiary)' }}>Purchased: </span>
-                        <span style={{ color: 'var(--seasons-text-primary)' }}>{ref.purchased.toLocaleString()} $SEAS</span>
+                        <span style={{ color: 'var(--seasons-text-primary)' }}>{formatters.number(ref.purchased)} $SEAS</span>
                       </div>
                       <div>
                         <span style={{ color: 'var(--seasons-text-tertiary)' }}>Rewarded: </span>
                         <span style={{ color: ref.rewarded > 0 ? 'var(--seasons-success)' : 'var(--seasons-text-tertiary)' }}>
-                          {ref.rewarded > 0 ? `+${ref.rewarded} $SEAS` : '—'}
+                          {ref.rewarded > 0 ? `+${formatters.number(ref.rewarded)} $SEAS` : '—'}
                         </span>
                       </div>
                     </div>

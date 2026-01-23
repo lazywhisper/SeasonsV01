@@ -8,15 +8,16 @@ import {
   ChevronRight,
   TrendingUp,
   Wallet,
-  Shield,
-  Zap,
-  BarChart3,
-  Users,
   Settings,
+  Zap,
+  Shield,
   Layout,
   Eye,
+  BarChart3,
   FileText,
 } from 'lucide-react';
+import { FilterButtonGroup } from '../ui/FilterButtonGroup';
+import { cardStyles } from '../../styles/cardStyles';
 import {
   Accordion,
   AccordionContent,
@@ -57,70 +58,10 @@ export function FAQPage() {
     },
     {
       category: 'general',
-      icon: BarChart3,
-      popular: true,
-      question: 'How is the yield quantity calculated?',
-      answer:
-        "Yield quantity is derived from 4 main variables: Buy Volume, Sell Volume, Number of \"nodes\" (active yielder's), and Rolling auto-yield.",
-    },
-    {
-      category: 'general',
       icon: Coins,
       question: 'What is the Transactional Fee?',
       answer:
         "The transactional fee is attached to every open on-chain market operations that involves the $SEAS token. The fee is captured and redirected throughout the Season's nodes.",
-    },
-    {
-      category: 'general',
-      icon: Zap,
-      popular: true,
-      question: "What is a Season's Node?",
-      answer:
-        "Season's nodes are any, non-blacklisted, on-chain address that are generating yield by possessing at least the threshold amount of 10,000 tokens.",
-    },
-    {
-      category: 'general',
-      icon: Settings,
-      question: 'Do I need to provide any Hardware/VPS to be a Node?',
-      answer:
-        'No. Nodes are the colloquial term used to classify all yield bearing wallet addresses; they do not function like layer 1 validator/node operators.',
-    },
-    {
-      category: 'general',
-      icon: Shield,
-      question: 'Can I OPT out of the Yield System?',
-      answer:
-        'No; once an address holds 10,000 $SEAS tokens it will automatically activate the yield; in order to "opt out" users will have to bring their wallet balances below the 10,000 token level.',
-    },
-    {
-      category: 'general',
-      icon: BarChart3,
-      question: "Are the Inclusion List Tier Weight's Final or can they be changed?",
-      answer:
-        'Tier weights are ascribed in proportion to their potential risk and return; in the first iteration they shall not be changed. However, they are absolutely susceptible to change at a later date, potential by community request via DAO.',
-    },
-    {
-      category: 'general',
-      icon: TrendingUp,
-      popular: true,
-      question:
-        'How is the yield system sustainable? What happens if market activity grinds to a halt and nobody enters or exits?',
-      answer:
-        "As a means to mitigate reliance on any single vector for yield, Season's is implementing a baseline yield module in the following version of the product that will imbue token holders with a soft industry-standard yield. (more information shall be provided in the Yield System --> Stable Baseline section)",
-    },
-    {
-      category: 'general',
-      icon: Shield,
-      question: "Why are some of the formula's not publicly shared?",
-      answer:
-        "Formula weights are not made easily accessible in order to mitigate any attempts by less than honest actors, namely projects that will attempt to falsify their data in order to qualify for inclusion. Nevertheless, at a certain point of the product's maturity it is anticipated that the community might be included to publicize it in the name of true openness; if/when they so decide to, the formulas will be provided via ZK for them to act upon it.",
-    },
-    {
-      category: 'general',
-      icon: Users,
-      question: 'Do Social factors play a role in Yield Asset Selection?',
-      answer:
-        "Absolutely. Beyond the numeric/quantitative elements of audience size and engagements (which are now, more than ever more difficult to decipher with the AI bot nets), multiple qualitative measures are factored in, including but not limited to the reputation of the followers (KOL's beware!), types of posts, and other consistencies.",
     },
     {
       category: 'general',
@@ -149,14 +90,6 @@ export function FAQPage() {
       question: 'Will Yield always be paid in Memecoins?',
       answer:
         'The default mechanism will always opt for Memecoins (due to the volatility profile which amplifies the APY potential), however, in the future users will be able to select a basket of assets in which they want to receive their yield (including stablecoins).',
-    },
-    {
-      category: 'token',
-      icon: BarChart3,
-      popular: true,
-      question: 'Why is there such a large fee on the buy/sell?',
-      answer:
-        'The fee is where Market trading revenue originates from. The fee is used to incentivize holding.',
     },
     {
       category: 'token',
@@ -321,10 +254,7 @@ export function FAQPage() {
       {/* Search Bar */}
       <div
         className="mb-6 p-1.5 rounded-xl"
-        style={{
-          background: 'var(--seasons-bg-elev)',
-          border: '1px solid var(--seasons-border-hair)',
-        }}
+        style={cardStyles.elevated}
       >
         <div className="relative">
           <Search
@@ -355,133 +285,16 @@ export function FAQPage() {
       </div>
 
       {/* Category Tabs */}
-      <div
-        className="mb-6 p-1.5 rounded-xl inline-flex gap-2"
-        style={{
-          background: 'var(--seasons-bg-elev)',
-          border: '1px solid var(--seasons-border-hair)',
-        }}
-      >
-        <button
-          onClick={() => setActiveCategory('all')}
-          className="px-4 py-2 rounded-lg transition-all relative overflow-hidden group"
-          style={{
-            background: activeCategory === 'all' ? 'var(--seasons-bg-card)' : 'transparent',
-            border:
-              activeCategory === 'all'
-                ? '1px solid var(--seasons-border-subtle)'
-                : '1px solid transparent',
-            color:
-              activeCategory === 'all'
-                ? 'var(--seasons-text-primary)'
-                : 'var(--seasons-text-tertiary)',
-            fontSize: '13px',
-            fontWeight: 600,
-          }}
-        >
-          {activeCategory === 'all' && (
-            <div
-              className="absolute inset-0 opacity-10"
-              style={{
-                background: 'linear-gradient(135deg, var(--seasons-brand-grad-start), var(--seasons-brand-grad-mid1))',
-              }}
-            />
-          )}
-          <span className="relative flex items-center gap-2">
-            All <span className="font-inter text-xs opacity-60">({categoryCounts.all})</span>
-          </span>
-        </button>
-
-        <button
-          onClick={() => setActiveCategory('general')}
-          className="px-4 py-2 rounded-lg transition-all relative overflow-hidden group"
-          style={{
-            background: activeCategory === 'general' ? 'var(--seasons-bg-card)' : 'transparent',
-            border:
-              activeCategory === 'general'
-                ? '1px solid var(--seasons-border-subtle)'
-                : '1px solid transparent',
-            color:
-              activeCategory === 'general'
-                ? 'var(--seasons-text-primary)'
-                : 'var(--seasons-text-tertiary)',
-            fontSize: '13px',
-            fontWeight: 600,
-          }}
-        >
-          {activeCategory === 'general' && (
-            <div
-              className="absolute inset-0 opacity-10"
-              style={{
-                background: 'linear-gradient(135deg, var(--seasons-brand-grad-mid1), var(--seasons-brand-grad-mid2))',
-              }}
-            />
-          )}
-          <span className="relative flex items-center gap-2">
-            General <span className="font-inter text-xs opacity-60">({categoryCounts.general})</span>
-          </span>
-        </button>
-
-        <button
-          onClick={() => setActiveCategory('token')}
-          className="px-4 py-2 rounded-lg transition-all relative overflow-hidden group"
-          style={{
-            background: activeCategory === 'token' ? 'var(--seasons-bg-card)' : 'transparent',
-            border:
-              activeCategory === 'token'
-                ? '1px solid var(--seasons-border-subtle)'
-                : '1px solid transparent',
-            color:
-              activeCategory === 'token'
-                ? 'var(--seasons-text-primary)'
-                : 'var(--seasons-text-tertiary)',
-            fontSize: '13px',
-            fontWeight: 600,
-          }}
-        >
-          {activeCategory === 'token' && (
-            <div
-              className="absolute inset-0 opacity-10"
-              style={{
-                background: 'linear-gradient(135deg, var(--seasons-brand-grad-mid2), var(--seasons-brand-grad-end))',
-              }}
-            />
-          )}
-          <span className="relative flex items-center gap-2">
-            Token <span className="font-inter text-xs opacity-60">({categoryCounts.token})</span>
-          </span>
-        </button>
-
-        <button
-          onClick={() => setActiveCategory('platform')}
-          className="px-4 py-2 rounded-lg transition-all relative overflow-hidden group"
-          style={{
-            background: activeCategory === 'platform' ? 'var(--seasons-bg-card)' : 'transparent',
-            border:
-              activeCategory === 'platform'
-                ? '1px solid var(--seasons-border-subtle)'
-                : '1px solid transparent',
-            color:
-              activeCategory === 'platform'
-                ? 'var(--seasons-text-primary)'
-                : 'var(--seasons-text-tertiary)',
-            fontSize: '13px',
-            fontWeight: 600,
-          }}
-        >
-          {activeCategory === 'platform' && (
-            <div
-              className="absolute inset-0 opacity-10"
-              style={{
-                background: 'linear-gradient(135deg, var(--seasons-brand-grad-mid2), var(--seasons-brand-grad-end))',
-              }}
-            />
-          )}
-          <span className="relative flex items-center gap-2">
-            Platform <span className="font-inter text-xs opacity-60">({categoryCounts.platform})</span>
-          </span>
-        </button>
-      </div>
+      <FilterButtonGroup
+        options={[
+          { value: 'all' as const, label: `All (${categoryCounts.all})` },
+          { value: 'general' as const, label: `General (${categoryCounts.general})` },
+          { value: 'token' as const, label: `Token (${categoryCounts.token})` },
+          { value: 'platform' as const, label: `Platform (${categoryCounts.platform})` },
+        ]}
+        value={activeCategory}
+        onChange={setActiveCategory}
+      />
 
       {/* Popular Questions (only show when no search/filter) */}
       {searchQuery === '' && activeCategory === 'all' && (
@@ -564,10 +377,7 @@ export function FAQPage() {
       {/* FAQ Accordion */}
       <div
         className="p-6 rounded-xl"
-        style={{
-          background: 'var(--seasons-bg-elev)',
-          border: '1px solid var(--seasons-border-hair)',
-        }}
+        style={cardStyles.elevated}
       >
         {filteredFAQs.length === 0 ? (
           <div className="text-center py-12">
@@ -716,10 +526,7 @@ export function FAQPage() {
       {/* Still have questions */}
       <div
         className="mt-8 p-6 rounded-xl relative overflow-hidden"
-        style={{
-          background: 'var(--seasons-bg-elev)',
-          border: '1px solid var(--seasons-border-hair)',
-        }}
+        style={cardStyles.elevated}
       >
         {/* Gradient overlay */}
         <div

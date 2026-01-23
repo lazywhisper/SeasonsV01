@@ -14,7 +14,7 @@ import { Button } from '../ui/button';
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
-import { toast } from 'sonner@2.0.3';
+import { cardStyles } from '../../styles/cardStyles';
 
 interface SettingsPageProps {
   isConnected?: boolean;
@@ -115,10 +115,7 @@ export function SettingsPage({
   }) => (
     <div
       className="rounded-xl p-6 mb-5"
-      style={{
-        background: 'var(--seasons-bg-elev)',
-        border: '1px solid var(--seasons-border-hair)',
-      }}
+      style={cardStyles.elevated}
     >
       <div className="flex items-start gap-4 mb-6">
         <div
@@ -201,10 +198,7 @@ export function SettingsPage({
       <div className="space-y-6">
         <div
           className="rounded-xl p-8 text-center"
-          style={{
-            background: 'var(--seasons-bg-elev)',
-            border: '1px solid var(--seasons-border-hair)',
-          }}
+          style={cardStyles.elevated}
         >
           <div
             className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"

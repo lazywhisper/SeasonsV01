@@ -7,12 +7,23 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { useState } from 'react';
+import { FilterButtonGroup } from '../ui/FilterButtonGroup';
+import { formatters } from '../../utils/formatters';
+import { cardStyles, textStyles } from '../../styles/cardStyles';
+import { PLATFORM } from '../../constants/platform';
 
 interface RecentActivityProps {
   data: ActivityEvent[];
 }
 
 type ActivityFilter = 'all' | 'rewards' | 'buys' | 'sells';
+
+const ACTIVITY_FILTER_OPTIONS = [
+  { value: 'all' as const, label: 'All Activity' },
+  { value: 'rewards' as const, label: 'Rewards' },
+  { value: 'buys' as const, label: 'Buys' },
+  { value: 'sells' as const, label: 'Sells' },
+];
 
 export function RecentActivity({ data }: RecentActivityProps) {
   const [activeFilter, setActiveFilter] = useState<ActivityFilter>('all');
@@ -29,8 +40,8 @@ export function RecentActivity({ data }: RecentActivityProps) {
       });
 
   // Show only first 5 events by default
-  const displayedEvents = showAll ? filteredEvents : filteredEvents.slice(0, 5);
-  const hasMore = filteredEvents.length > 5;
+  const displayedEvents = showAll ? filteredEvents : filteredEvents.slice(0, PLATFORM.UI.DEFAULT_ITEMS_PER_PAGE);
+  const hasMore = filteredEvents.length > PLATFORM.UI.DEFAULT_ITEMS_PER_PAGE;
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -70,76 +81,12 @@ export function RecentActivity({ data }: RecentActivityProps) {
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">
-          {/* Mobile: Select dropdown */}
-          <div className="md:hidden flex-1">
-            <select
-              value={activeFilter}
-              onChange={(e) => setActiveFilter(e.target.value as ActivityFilter)}
-              className="w-full px-3 py-2 rounded-md text-xs transition-colors"
-              style={{
-                background: 'var(--seasons-bg-base)',
-                color: 'var(--seasons-text-primary)',
-                border: '1px solid var(--seasons-border-hair)',
-              }}
-            >
-              <option value="all">All Activity</option>
-              <option value="rewards">Rewards</option>
-              <option value="buys">Buys</option>
-              <option value="sells">Sells</option>
-            </select>
-          </div>
-
-          {/* Desktop: Button group */}
-          <div className="hidden md:flex items-center gap-2 rounded-md" style={{ background: 'var(--seasons-bg-base)', padding: '4px' }}>
-            <button
-              onClick={() => setActiveFilter('all')}
-              className="px-3 py-1 rounded transition-colors"
-              style={{
-                fontSize: '11px',
-                color: activeFilter === 'all' ? 'var(--seasons-text-primary)' : 'var(--seasons-text-secondary)',
-                whiteSpace: 'nowrap',
-                background: activeFilter === 'all' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              }}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setActiveFilter('rewards')}
-              className="px-3 py-1 rounded transition-colors"
-              style={{
-                fontSize: '11px',
-                color: activeFilter === 'rewards' ? 'var(--seasons-text-primary)' : 'var(--seasons-text-secondary)',
-                whiteSpace: 'nowrap',
-                background: activeFilter === 'rewards' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              }}
-            >
-              Rewards
-            </button>
-            <button
-              onClick={() => setActiveFilter('buys')}
-              className="px-3 py-1 rounded transition-colors"
-              style={{
-                fontSize: '11px',
-                color: activeFilter === 'buys' ? 'var(--seasons-text-primary)' : 'var(--seasons-text-secondary)',
-                whiteSpace: 'nowrap',
-                background: activeFilter === 'buys' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              }}
-            >
-              Buys
-            </button>
-            <button
-              onClick={() => setActiveFilter('sells')}
-              className="px-3 py-1 rounded transition-colors"
-              style={{
-                fontSize: '11px',
-                color: activeFilter === 'sells' ? 'var(--seasons-text-primary)' : 'var(--seasons-text-secondary)',
-                whiteSpace: 'nowrap',
-                background: activeFilter === 'sells' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              }}
-            >
-              Sells
-            </button>
-          </div>
+          {/* Unified filter button group (mobile select + desktop buttons) */}
+          <FilterButtonGroup
+            options={ACTIVITY_FILTER_OPTIONS}
+            value={activeFilter}
+            onChange={setActiveFilter}
+          />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -232,7 +179,7 @@ export function RecentActivity({ data }: RecentActivityProps) {
             textAlign: 'center',
           }}
         >
-          {showAll ? 'Show less' : `Show more (${filteredEvents.length - 5} more)`}
+          {showAll ? 'Show less' : `Show more (${filteredEvents.length - PLATFORM.UI.DEFAULT_ITEMS_PER_PAGE} more)`}
         </button>
       )}
     </div>

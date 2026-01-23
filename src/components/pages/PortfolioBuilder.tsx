@@ -24,6 +24,10 @@ import wojakLogo from 'figma:asset/4473a63568169da525a90ec8727cf26b6ee11add.png'
 import jbmbLogo from 'figma:asset/5f7d06d332fd284477eac1ceb01e315d9b508091.png';
 import solanaLogo from 'figma:asset/5633c08b2dd5db21c15725009af45cc34535287a.png';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts';
+import { PLATFORM } from '../../constants/platform';
+import { formatters } from '../../utils/formatters';
+import { cardStyles } from '../../styles/cardStyles';
+import { FilterButtonGroup } from '../ui/FilterButtonGroup';
 
 // Asset yield data with realistic APY ranges, 7-day accruals, and USD values
 const assetYieldData: Record<string, { apyRange: string; accrued7d: number; valueUsd7d: number }> = {
@@ -53,6 +57,13 @@ const logoMap: Record<string, string> = {
   'JBMB': jbmbLogo,
 };
 
+const PORTFOLIO_FILTER_OPTIONS = [
+  { value: 'all' as const, label: 'All Assets' },
+  { value: 'blue' as const, label: 'Blue Chips' },
+  { value: 'under' as const, label: 'Underdogs' },
+  { value: 'rising' as const, label: 'Rising Stars' },
+];
+
 export function PortfolioBuilder() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [sortField, setSortField] = useState<SortField | null>(null);
@@ -81,9 +92,9 @@ export function PortfolioBuilder() {
   }, []);
 
   const targetWeights = {
-    blue: 60,
-    under: 30,
-    rising: 10,
+    blue: PLATFORM.ALLOCATION.BLUE_CHIPS,
+    under: PLATFORM.ALLOCATION.UNDERDOGS,
+    rising: PLATFORM.ALLOCATION.RISING_STARS,
   };
 
   const compositionData = [
@@ -91,21 +102,21 @@ export function PortfolioBuilder() {
       name: 'Blue Chips', 
       target: targetWeights.blue, 
       actual: actualWeights.blue,
-      color: '#E9C774',
+      color: PLATFORM.COLORS.BLUE_CHIP,
       category: 'blue'
     },
     { 
       name: 'Underdogs', 
       target: targetWeights.under, 
       actual: actualWeights.under,
-      color: '#B44BCB',
+      color: PLATFORM.COLORS.UNDERDOG,
       category: 'under'
     },
     { 
       name: 'Rising Stars', 
       target: targetWeights.rising, 
       actual: actualWeights.rising,
-      color: '#4B80CB',
+      color: PLATFORM.COLORS.RISING_STAR,
       category: 'rising'
     },
   ];
@@ -164,11 +175,7 @@ export function PortfolioBuilder() {
   return (
     <div
       className="p-4 md:p-6 rounded-xl"
-      style={{
-        background: 'var(--seasons-bg-elev)',
-        border: '1px solid var(--seasons-border-hair)',
-        boxShadow: 'var(--seasons-card-shadow)',
-      }}
+      style={cardStyles.elevated}
     >
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-3 md:gap-4 mb-4">
@@ -181,7 +188,7 @@ export function PortfolioBuilder() {
               lineHeight: '1.3',
             }}
           >
-            Portfolio Auto Builder
+            Inclusion Allocation
           </h2>
         </div>
 
@@ -300,10 +307,7 @@ export function PortfolioBuilder() {
               <div
                 key={item.name}
                 className="p-3 md:p-4 rounded-lg"
-                style={{
-                  background: 'var(--seasons-bg-card)',
-                  border: '1px solid var(--seasons-border-hair)',
-                }}
+                style={cardStyles.base}
               >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-2 md:mb-3">
@@ -734,10 +738,7 @@ export function PortfolioBuilder() {
           <div
             key={idx}
             className="p-3 rounded-lg"
-            style={{
-              background: 'var(--seasons-bg-card)',
-              border: '1px solid var(--seasons-border-hair)',
-            }}
+            style={cardStyles.base}
           >
             <div className="flex items-start gap-3 mb-2">
               {logoMap[asset.symbol] && (

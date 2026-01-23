@@ -5,6 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from './ui/popover';
+import { cardStyles } from '../styles/cardStyles';
 
 // Notification types specific to platform operations
 export interface PlatformNotification {
@@ -80,8 +81,7 @@ export function NotificationPanel({
         align="end"
         className="w-[calc(100vw-32px)] sm:w-[440px] p-0"
         style={{
-          background: 'var(--seasons-bg-elev)',
-          border: '1px solid var(--seasons-border-hair)',
+          ...cardStyles.elevated,
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
         }}
       >

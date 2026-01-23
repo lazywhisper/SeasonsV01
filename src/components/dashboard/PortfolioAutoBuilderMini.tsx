@@ -1,5 +1,6 @@
 import { Zap, TrendingUp, Info, DollarSign, ArrowUpRight, Calendar, Clock, Infinity } from 'lucide-react';
 import { Asset, targetWeights } from '../../lib/mockData';
+import { formatters } from '../../utils/formatters';
 import {
   Tooltip,
   TooltipContent,
@@ -179,9 +180,10 @@ export function PortfolioAutoBuilderMini({ assets, onNavigate }: PortfolioAutoBu
                 fontWeight: 700,
                 color: 'var(--seasons-text-primary)',
                 fontFamily: 'var(--font-inter)',
+                fontFeatureSettings: "'tnum' 1",
               }}
             >
-              ${rewards7d.toFixed(2)}
+              {formatters.currency(rewards7d, 2)}
             </div>
             {/* Subtle accent */}
             <div
@@ -224,9 +226,10 @@ export function PortfolioAutoBuilderMini({ assets, onNavigate }: PortfolioAutoBu
                 fontWeight: 700,
                 color: 'var(--seasons-text-primary)',
                 fontFamily: 'var(--font-inter)',
+                fontFeatureSettings: "'tnum' 1",
               }}
             >
-              ${rewards30d.toFixed(2)}
+              {formatters.currency(rewards30d, 2)}
             </div>
             {/* Subtle accent */}
             <div
@@ -269,9 +272,10 @@ export function PortfolioAutoBuilderMini({ assets, onNavigate }: PortfolioAutoBu
                 fontWeight: 700,
                 color: 'var(--seasons-text-primary)',
                 fontFamily: 'var(--font-inter)',
+                fontFeatureSettings: "'tnum' 1",
               }}
             >
-              ${rewardsAllTime.toFixed(0)}
+              {formatters.currency(rewardsAllTime, 0)}
             </div>
             {/* Subtle accent */}
             <div
@@ -321,9 +325,10 @@ export function PortfolioAutoBuilderMini({ assets, onNavigate }: PortfolioAutoBu
                       fontWeight: 700,
                       color: 'var(--seasons-text-primary)',
                       fontFamily: 'var(--font-inter)',
+                      fontFeatureSettings: "'tnum' 1",
                     }}
                   >
-                    {item.actual.toFixed(1)}%
+                    {formatters.percentage(item.actual, 1)}
                   </span>
                   <span
                     style={{
@@ -339,9 +344,10 @@ export function PortfolioAutoBuilderMini({ assets, onNavigate }: PortfolioAutoBu
                         fontSize: '11px',
                         fontWeight: 600,
                         color: 'var(--seasons-text-secondary)',
+                        fontFeatureSettings: "'tnum' 1",
                       }}
                     >
-                      {delta > 0 ? '+' : ''}{delta.toFixed(1)}%
+                      {delta > 0 ? '+' : ''}{formatters.number(delta, 1)}%
                     </span>
                   )}
                 </div>

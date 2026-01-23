@@ -5,6 +5,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../ui/tooltip';
+import { PLATFORM } from '../../constants/platform';
+import { formatters } from '../../utils/formatters';
+import { cardStyles, textStyles } from '../../styles/cardStyles';
 
 interface YieldInfoPanelProps {
   apy: number;
@@ -21,11 +24,7 @@ export function YieldInfoPanel({ apy, activeNodes, yieldDistributed, isConnected
   return (
     <div
       className="p-4 md:p-6 rounded-xl"
-      style={{
-        background: 'var(--seasons-bg-elev)',
-        border: '1px solid var(--seasons-border-hair)',
-        boxShadow: 'var(--seasons-card-shadow)',
-      }}
+      style={cardStyles.elevated}
     >
       {/* Header */}
       <div className="mb-4 md:mb-5">
@@ -112,7 +111,7 @@ export function YieldInfoPanel({ apy, activeNodes, yieldDistributed, isConnected
               color: 'var(--seasons-text-tertiary)',
             }}
           >
-            * Based on 30-day rolling period
+            {PLATFORM.APY.DISCLAIMER}
           </div>
         </div>
 
