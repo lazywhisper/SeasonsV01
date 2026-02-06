@@ -10,6 +10,7 @@ import {
   ExternalLink,
   AlertTriangle
 } from 'lucide-react';
+import { toast } from 'sonner@2.0.3';
 import { Button } from '../ui/button';
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';

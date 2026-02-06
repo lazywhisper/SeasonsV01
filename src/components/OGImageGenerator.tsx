@@ -173,7 +173,7 @@ export function OGImageGenerator({
                 marginBottom: '8px',
               }}
             >
-              Passive
+              Onchain
             </div>
             <div
               style={{

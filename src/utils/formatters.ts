@@ -18,11 +18,13 @@ export const formatters = {
    * Format numbers with thousands separator
    * @example formatters.number(1234567, 0) => "1,234,567"
    */
-  number: (value: number, decimals = 0): string =>
-    value.toLocaleString('en-US', {
+  number: (value: number | undefined, decimals = 0): string => {
+    if (value === undefined || value === null || isNaN(value)) return '0';
+    return value.toLocaleString('en-US', {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
-    }),
+    });
+  },
 
   /**
    * Format large numbers with K/M suffixes

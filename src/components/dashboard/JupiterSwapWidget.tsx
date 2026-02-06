@@ -92,10 +92,10 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
   
   // Calculate node status
   const totalAfterPurchase = currentSeasBalance + nodeAmount;
-  const isNodeAlreadyActive = currentSeasBalance >= PLATFORM.NODE_ACTIVATION_THRESHOLD;
-  const willNodeActivate = !isNodeAlreadyActive && totalAfterPurchase >= PLATFORM.NODE_ACTIVATION_THRESHOLD;
-  const remainingForNode = Math.max(0, PLATFORM.NODE_ACTIVATION_THRESHOLD - totalAfterPurchase);
-  const progressToNode = Math.min(100, (totalAfterPurchase / PLATFORM.NODE_ACTIVATION_THRESHOLD) * 100);
+  const isNodeAlreadyActive = currentSeasBalance >= PLATFORM.NODE.ACTIVATION_THRESHOLD;
+  const willNodeActivate = !isNodeAlreadyActive && totalAfterPurchase >= PLATFORM.NODE.ACTIVATION_THRESHOLD;
+  const remainingForNode = Math.max(0, PLATFORM.NODE.ACTIVATION_THRESHOLD - totalAfterPurchase);
+  const progressToNode = Math.min(100, (totalAfterPurchase / PLATFORM.NODE.ACTIVATION_THRESHOLD) * 100);
 
   return (
     <div
@@ -509,14 +509,14 @@ export function JupiterSwapWidget({ onClose }: JupiterSwapWidgetProps) {
                         </span>
                       </div>
                       <span style={{ fontSize: '8px', color: 'var(--seasons-text-tertiary)' }}>
-                        Total: {formatters.number(totalAfterPurchase, 0)} / {formatters.number(PLATFORM.NODE_ACTIVATION_THRESHOLD)} SEAS
+                        Total: {formatters.number(totalAfterPurchase, 0)} / {formatters.number(PLATFORM.NODE.ACTIVATION_THRESHOLD)} SEAS
                       </span>
                     </div>
                   ) : (
                     <div className="mt-1.5">
                       <div className="flex items-center justify-between mb-1">
                         <span style={{ fontSize: '8px', color: 'var(--seasons-text-tertiary)' }}>
-                          {formatters.number(totalAfterPurchase, 0)} / {formatters.number(PLATFORM.NODE_ACTIVATION_THRESHOLD)} SEAS
+                          {formatters.number(totalAfterPurchase, 0)} / {formatters.number(PLATFORM.NODE.ACTIVATION_THRESHOLD)} SEAS
                         </span>
                         <span style={{ fontSize: '8px', color: 'var(--seasons-text-tertiary)', fontWeight: 600 }}>
                           {formatters.percentage(progressToNode, 0)}

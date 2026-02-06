@@ -186,57 +186,89 @@ export default function App() {
   // Get current page SEO data
   const currentSEO = pageSEO[currentPage];
 
-  // FAQ Page Structured Data
+  // FAQ Page Structured Data - Enhanced with more questions
   const faqStructuredData = currentPage === 'faq' ? {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'Why is the yield on Season\'s different from any other?',
+        name: 'What is Seasons platform?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The differentiator is the method through yield is derived; rather than simple lending/borrowing, yield is generated from the transactional fee mechanism; which in turn provides a radically different potential APY.',
+          text: 'Seasons is a Solana-native yield aggregation platform that automatically optimizes your portfolio across three strategic asset tiers: Blue Chips (60%), Underdogs (30%), and Rising Stars (10%). Access requires holding 10,000+ $SEAS tokens, providing exclusive entry to institutional-grade onchain yield strategies.',
         },
       },
       {
         '@type': 'Question',
-        name: 'What is a Season\'s Node?',
+        name: 'How do I qualify for dashboard access?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Season\'s nodes are any, non-blacklisted, on-chain address that are generating yield by possessing at least the threshold amount of 10,000 tokens.',
+          text: 'You must hold a minimum of 10,000 $SEAS tokens in your connected wallet. The platform automatically verifies your $SEAS balance, and the dashboard unlocks immediately upon qualification.',
         },
       },
       {
         '@type': 'Question',
-        name: 'How is the yield quantity calculated?',
+        name: 'How is APR/APY calculated?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yield quantity is derived from 4 main variables: Buy Volume, Sell Volume, Number of "nodes" (active yielder\'s), and Rolling auto-yield.',
+          text: 'All displayed APR/APY metrics are calculated based on a 30-day rolling period using actual onchain performance data. This provides a realistic view of recent yields while smoothing short-term volatility.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Why is there such a large fee on the buy/sell?',
+        name: 'What types of onchain yield does Seasons generate?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The fee is where Market trading revenue originates from. The fee is used to incentivize holding.',
+          text: 'Seasons aggregates multiple yield sources including staking rewards, lending protocols, liquidity provision, yield farming, protocol incentives, airdrops, and trading fee redistribution across Blue Chips, Underdogs, and Rising Stars categories.',
         },
       },
       {
         '@type': 'Question',
-        name: 'Where can i buy $SEAS',
+        name: 'What is the 6:3:1 allocation rule?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: '$SEAS token can be acquired on any/every decentralized exchange compatible with the Solana blockchain/SPL token standard.',
+          text: 'This is Seasons\' core portfolio philosophy: Blue Chips 60% (established Solana projects), Underdogs 30% (mid-cap protocols with proven PMF), Rising Stars 10% (early-stage high-conviction bets). This ratio is enforced automatically and rebalanced daily at 00:00 UTC.',
         },
       },
       {
         '@type': 'Question',
-        name: 'How do I navigate the Seasons dashboard?',
+        name: 'How does governance work?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'The dashboard is organized into several key sections accessible via the sidebar: Overview (main dashboard), Yield (distribution metrics), Assets (portfolio breakdown), My Node (personal stats), Settings (account preferences), and FAQ. Click any menu item to view that section.',
+          text: 'Seasons uses a weighted voting system where 1 $SEAS = 1 vote. Proposals require 50,000 $SEAS to create, and 100,000 $SEAS threshold to activate system-critical changes. Voting includes 7-day discussion period and 5-day voting window.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Is my wallet safe when connecting?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. Seasons uses read-only wallet connections by default. We never request private keys, transactions require explicit wallet approval, and all smart contracts are audited by Certik and Halborn.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What fees does Seasons charge?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Management fee: 0.5% annually. Performance fee: 10% of yields above 8% APY benchmark. No withdrawal or deposit fees.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Where can I buy $SEAS?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: '$SEAS token can be acquired on Raydium, Orca, or Jupiter Aggregator on the Solana blockchain.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: "What is a Season's Node?",
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Season\'s nodes are any, non-blacklisted, on-chain address that are generating yield by possessing at least the threshold amount of 10,000 $SEAS tokens.',
         },
       },
     ],
